@@ -1,0 +1,6 @@
+pandas==2.2.2
+numpy==2.0.2
+biopython==1.84
+scipy==1.14.1
+tcrdist3==0.3
+anarci==1.3
