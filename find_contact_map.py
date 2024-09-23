@@ -168,8 +168,8 @@ def find_closest_tcr(df, alpha_seq, beta_seq):
     
     # Compute distances for alpha and beta chains
     try:
-        distances_alpha = tr_updated.pw_alpha[new_index, :-1]
-        distances_beta = tr_updated.pw_beta[new_index, :-1]
+        distances_alpha = tr_updated.pw_alpha
+        distances_beta = tr_updated.pw_beta
     except IndexError as e:
         print(f"IndexError: {e}")
         return None
