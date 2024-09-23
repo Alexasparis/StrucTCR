@@ -70,6 +70,10 @@ def main():
     # Filter contacts
     print("Filtering contacts")
     
+    #Initialize DataFrames to store all contacts
+    all_contacts_TCR_p = pd.DataFrame()
+    all_contacts_TCR_MHC = pd.DataFrame()
+    
     # Use the chain_dict to filter contacts for each pdb_id
     for pdb_id, chains in chain_dict.items():
         if all(chains.values()):  # Ensure all chain identifiers are present
@@ -79,25 +83,27 @@ def main():
                 chains['tcrb_chain'],
                 chains['peptide_chain'],
                 chains['mhc_chain'],
-                threshold=2
-            )
-            
-            # Calculate TCRen potentials
-            print(f"Calculating TCRen potentials for PDB ID: {pdb_id}")
-            print("Calculating TCR-peptide potential")
-            data_TCR_p = calculate_TCRen(contacts_TCR_p, peptide=True)
-            print("Calculating TCR-MHCI potential")
-            data_TCR_MHC = calculate_TCRen(contacts_TCR_MHC, peptide=False)
-            
-            # Save the results
-            data_TCR_p.to_csv(os.path.join(output_dir, f'TCRen_TCR_p_{pdb_id}.csv'), index=False)
-            data_TCR_MHC.to_csv(os.path.join(output_dir, f'TCRen_TCR_MHC_{pdb_id}.csv'), index=False)
-            
-            print(f"TCRen potential for TCR-peptide saved to {os.path.join(output_dir, f'TCRen_TCR_p_{pdb_id}.csv')}")
-            print(f"TCRen potential for TCR-MHC saved to {os.path.join(output_dir, f'TCRen_TCR_MHC_{pdb_id}.csv')}")
+                threshold=2)
+        
+        # Accumulate the filtered contacts for each PDB
+            all_contacts_TCR_p = pd.concat([all_contacts_TCR_p, contacts_TCR_p], ignore_index=True)
+            all_contacts_TCR_MHC = pd.concat([all_contacts_TCR_MHC, contacts_TCR_MHC], ignore_index=True)
         else:
             print(f"Missing chain information for PDB ID: {pdb_id}. Skipping...")
-
+    
+    # Calculate TCRen potentials for all accumulated contacts
+    print("Calculating TCRen potentials for all PDB IDs")
+    print("Calculating TCR-peptide potential")
+    data_TCR_p = calculate_TCRen(all_contacts_TCR_p, peptide=True)
+    print("Calculating TCR-MHCI potential")
+    data_TCR_MHC = calculate_TCRen(all_contacts_TCR_MHC, peptide=False)
+    
+    # Save the results to the specified output files
+    data_TCR_p.to_csv(args.output_p, index=False)
+    data_TCR_MHC.to_csv(args.output_m, index=False)
+    
+    print(f"TCRen potential for TCR-peptide saved to {args.output_p}")
+    print(f"TCRen potential for TCR-MHC saved to {args.output_m}")
     print("Processing complete.")
 
 if __name__ == "__main__":

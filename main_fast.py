@@ -48,11 +48,11 @@ def main():
     epitope_seq = args.epitope_seq
     tcr_p_potential = pd.read_csv(args.peptide_potential)
     tcr_mhc_potential = pd.read_csv(args.mhc_potential)
+    general_df = pd.read_csv(args.general_file, sep='\t')
     
     # Chain dictionary
-    df = pd.read_csv(args.general_file, sep='\t')
     chain_dict = {}
-    for pdb_id, group in df.groupby('pdb.id'):
+    for pdb_id, group in general_df.groupby('pdb.id'):
         chains = {
             'tcra_chain': None,
             'tcrb_chain': None,
@@ -72,6 +72,8 @@ def main():
         
         chain_dict[pdb_id] = chains
     
+    #####  COMPARING TCRs #####
+    
     print("\nCreating DataFrame to compare TCRs")
     alpha_outputs = []
     beta_outputs = []
@@ -86,47 +88,51 @@ def main():
         alpha_seq, beta_seq, epitope = extract_specific_sequences(pdb_path, seq_dict)
         
         if alpha_seq and beta_seq:
-            alpha_anarci = run_anarci(alpha_seq, "alpha")
-            alpha_outputs.append(alpha_anarci)
-            beta_anarci = run_anarci(beta_seq, "beta")
-            beta_outputs.append(beta_anarci)
-            cdrs_parsing = parse_cdrs(alpha_anarci, beta_anarci, epitope)
-            cdrs_results.append({
-                'pdb_id': pdb_id,
-                'cdr1_a': cdrs_parsing['Alpha']['CDR1'],
-                'cdr2_a': cdrs_parsing['Alpha']['CDR2'],
-                'cdr2.5_a': cdrs_parsing['Alpha']['CDR2.5'],
-                'cdr3_a': cdrs_parsing['Alpha']['CDR3'],
-                'cdr1_b': cdrs_parsing['Beta']['CDR1'],
-                'cdr2_b': cdrs_parsing['Beta']['CDR2'],
-                'cdr2.5_b': cdrs_parsing['Beta']['CDR2.5'],
-                'cdr3_b': cdrs_parsing['Beta']['CDR3'],
-                'epitope': cdrs_parsing['Epitope']
-            })
+            if args.similarity_metric == "Levenshtein":
+                cdrs_parsing = parse_cdrs(alpha_anarci, beta_anarci, epitope)
+                cdrs_results.append({
+                    'pdb_id': pdb_id,
+                    'cdr1_a': cdrs_parsing['Alpha']['CDR1'],
+                    'cdr2_a': cdrs_parsing['Alpha']['CDR2'],
+                    'cdr2.5_a': cdrs_parsing['Alpha']['CDR2.5'],
+                    'cdr3_a': cdrs_parsing['Alpha']['CDR3'],
+                    'cdr1_b': cdrs_parsing['Beta']['CDR1'],
+                    'cdr2_b': cdrs_parsing['Beta']['CDR2'],
+                    'cdr2.5_b': cdrs_parsing['Beta']['CDR2.5'],
+                    'cdr3_b': cdrs_parsing['Beta']['CDR3'],
+                    'epitope': cdrs_parsing['Epitope']
+                })
+            elif args.similarity_metric == "TCRdist":
+                alpha_anarci = run_anarci(alpha_seq, "alpha")
+                alpha_outputs.append(alpha_anarci)
+                beta_anarci = run_anarci(beta_seq, "beta")
+                beta_outputs.append(beta_anarci)
     
     # DataFrame to compute similarities
-    if args.similarity_metric == "TCRdist":
-        input_df = create_dataframe(alpha_outputs, beta_outputs, pdb_ids)
-        input_df.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False) # Non-parsed df with alleles that could not be included in the db of the method
-        print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
-    
-    elif args.similarity_metric == "Levenshtein":
+    if args.similarity_metric == "Levenshtein":
         df_lev = pd.DataFrame(cdrs_results)
         df_lev.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False)
         print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
+        
+    elif args.similarity_metric == "TCRdist":
+        input_df = create_dataframe(alpha_outputs, beta_outputs, pdb_ids)
+        input_df.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False)
+        print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
+    
+    ##### PROCESSING INPUT TCRs #####
     
     print("\n#### Processing TCRs ####")
-
-    processed_pdb_ids = set()  # Set to keep track of processed PDB IDs
-    contacts_processed = {}  # Dictionary to save contacts DataFrames
     
     for index, row in tcr_df.iterrows():
+        
+        # Get TCR data from pdb files
         tcr_id = row['tcr_id']
         print(f"\nProcessing TCR: {tcr_id}")
         alpha_seq = row['alpha_seq']
         beta_seq = row['beta_seq']
+        pdb_id_similar = None
         
-        # Similarity metrics
+        # Compute similarity with TCRs from PDB files
         if args.similarity_metric == "TCRdist":
             v_gene_a, j_gene_a = get_germlines(alpha_seq)
             v_gene_b, j_gene_b = get_germlines(beta_seq)
@@ -137,45 +143,31 @@ def main():
             
             if all_present:
                 tcr_dist_df = pd.read_csv("./structures_annotation/TCRdist_df.csv")
-                pdb_id = find_closest_tcr(tcr_dist_df, alpha_seq, beta_seq) # Parsed df excluding alleles not present in the db of the method
+                pdb_id_similar = find_closest_tcr(tcr_dist_df, alpha_seq, beta_seq)
             else:
                 print("Not possible to calculate TCRdist because alleles of query TCR are not in the db")
                 print("Calculating similarities based on Levenshtein distances")
                 df_lev = pd.DataFrame(cdrs_results)
                 df_distances = create_distance_matrix(df_lev, alpha_seq, beta_seq, epitope_seq)
-                pdb_id = get_min_combined_distance(df_distances)
+                pdb_id_similar = get_min_combined_distance(df_distances)
+                print(f"pdb_id_similar: {pdb_id_similar}")
                 
         elif args.similarity_metric == "Levenshtein":
             df_lev = pd.DataFrame(cdrs_results)
             df_distances = create_distance_matrix(df_lev, alpha_seq, beta_seq, epitope_seq)
-            pdb_id = get_min_combined_distance(df_distances)
+            pdb_id_similar = get_min_combined_distance(df_distances)
+            print(f"pdb_id_similar: {pdb_id_similar}")
     
-        # Extract contacts    
-        if pdb_id:
+        ##### EXTRACT CONTACTS FROM PDB FILE #####
+        
+        if pdb_id_similar:
             print(f"Matching contact map found in {pdb_id}")
             pdb_file_path = os.path.join(args.pdb_folder, f"{pdb_id}.pdb")
 
-            if pdb_id not in processed_pdb_ids:
-                if not os.path.isfile(pdb_file_path):
-                    print(f"Error: The file does not exist at {pdb_file_path}")
-                else:
-                    contacts_df = extract_contacts([pdb_file_path], chain_dict, distance=5)
-                    chains = chain_dict.get(pdb_id, {})
-                    if all(chains.values()):  # Ensure all chain identifiers are present
-                        contacts_TCR_p, contacts_TCR_MHC = filter_contacts(
-                            contacts_df,
-                            chains['tcra_chain'],
-                            chains['tcrb_chain'],
-                            chains['peptide_chain'],
-                            chains['mhc_chain'],
-                            threshold=2
-                        )
-                        contacts_processed[pdb_id] = contacts_df
-
-                processed_pdb_ids.add(pdb_id)  # Mark this PDB ID as processed
+            if not os.path.isfile(pdb_file_path):
+                print(f"Error: The file does not exist at {pdb_file_path}")
             else:
-                print(f"Contacts for {pdb_id} have already been processed. Retrieving from cache.")
-                contacts_df = contacts_processed[pdb_id]
+                contacts_df = pd.read_csv(f"./contact_maps/{pdb_id}_contacts.csv")
                 chains = chain_dict.get(pdb_id, {})
                 if all(chains.values()):  # Ensure all chain identifiers are present
                     contacts_TCR_p, contacts_TCR_MHC = filter_contacts(
@@ -186,35 +178,36 @@ def main():
                         chains['mhc_chain'],
                         threshold=2
                     )
+                    contacts_processed[pdb_id] = contacts_df        
 
-            # Mapping with IMGT numbering
-            print("Renumbering sequences with IMGT convention")
-            alpha_pdb, beta_pdb, epitope_pdb = extract_specific_sequences(pdb_file_path, seq_dict)
+                # Mapping with IMGT numbering
+                print("Renumbering sequences with IMGT convention")
+                alpha_pdb, beta_pdb, epitope_pdb = extract_specific_sequences(pdb_file_path, seq_dict)
 
-            anarci_D = run_anarci(alpha_pdb, 'alpha')
-            anarci_E = run_anarci(beta_pdb, 'beta')
-            parsed_anarci_D = parse_anarci_output(anarci_D)
-            parsed_anarci_E = parse_anarci_output(anarci_E)
+                anarci_D = run_anarci(alpha_pdb, 'alpha')
+                anarci_E = run_anarci(beta_pdb, 'beta')
+                parsed_anarci_D = parse_anarci_output(anarci_D)
+                parsed_anarci_E = parse_anarci_output(anarci_E)
 
-            residues_D = extract_residues_and_resids(pdb_file_path, chains['tcra_chain'])
-            residues_E = extract_residues_and_resids(pdb_file_path, chains['tcrb_chain'])
+                residues_D = extract_residues_and_resids(pdb_file_path, chains['tcra_chain'])
+                residues_E = extract_residues_and_resids(pdb_file_path, chains['tcrb_chain'])
 
-            mapping_D = map_imgt_to_original(parsed_anarci_D, residues_D)
-            mapping_E = map_imgt_to_original(parsed_anarci_E, residues_E)
+                mapping_D = map_imgt_to_original(parsed_anarci_D, residues_D)
+                mapping_E = map_imgt_to_original(parsed_anarci_E, residues_E)
 
-            imgt_mappings = {pdb_id: {chains['tcra_chain']: mapping_D, chains['tcrb_chain']: mapping_E}}
-            contacts_imgt_M = add_imgt_mappings(contacts_TCR_MHC, imgt_mappings)
-            contacts_imgt_P = add_imgt_mappings(contacts_TCR_p, imgt_mappings)
-            print("IMGT mapping done")
+                imgt_mappings = {pdb_id: {chains['tcra_chain']: mapping_D, chains['tcrb_chain']: mapping_E}}
+                
+                contacts_imgt_M = add_imgt_mappings(contacts_TCR_MHC, imgt_mappings)
+                contacts_imgt_P = add_imgt_mappings(contacts_TCR_p, imgt_mappings)
+                print("IMGT mapping done")
 
-            contacts_TCR_p.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_contacts_peptide.csv"), index=False)
-            contacts_TCR_MHC.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_contacts_mhc.csv"), index=False)
-            print(f"Contacts saved to {os.path.join(output_dir, f'{pdb_id}_{tcr_id}_contacts_peptide.csv')} and {os.path.join(output_dir, f'{pdb_id}_{tcr_id}_contacts_mhc.csv')}")
-
+                contacts_TCR_p.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_contacts_peptide.csv"), index=False)
+                contacts_TCR_MHC.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_contacts_mhc.csv"), index=False)
         else:
             print("No matching pdb_file found")
 
-        # Parsing TCR
+        ##### PROCESS INPUT TCR #####
+        
         print(f"Parsing TCR {tcr_id}")
         tcr_alpha = run_anarci(alpha_seq, "alpha")
         tcr_beta = run_anarci(beta_seq, "beta")
@@ -223,22 +216,23 @@ def main():
         imgt_dict_D = dict(parsed_tcr_D)
         imgt_dict_E = dict(parsed_tcr_E)
 
-        contacts_TCR_p['imgt_from'] = contacts_TCR_p.apply(lambda row: imgt_dict_D.get(row['imgt_from'], None) if row['chain_from'] == chains['tcra_chain']
+        contacts_TCR_p[tcr_id] = contacts_TCR_p.apply(lambda row: imgt_dict_D.get(row['imgt_from'], None) if row['chain_from'] == chains['tcra_chain']
                         else imgt_dict_E.get(row['imgt_from'], None) if row['chain_from'] == chains['tcrb_chain']
                         else None, axis=1)
-        contacts_TCR_MHC['imgt_from'] = contacts_TCR_MHC.apply(lambda row: imgt_dict_D.get(row['imgt_from'], None) if row['chain_from'] == chains['tcra_chain']
+        contacts_TCR_MHC[tcr_id] = contacts_TCR_MHC.apply(lambda row: imgt_dict_D.get(row['imgt_from'], None) if row['chain_from'] == chains['tcra_chain']
                         else imgt_dict_E.get(row['imgt_from'], None) if row['chain_from'] == chains['tcrb_chain']
                         else None, axis=1)
 
-        # Processing epitope
+        ##### PROCESS INPUT EPITOPE #####
+        
         print(f"Processing epitope: {epitope_seq}")
         contacts_TCR_p['epitope'] = contacts_TCR_p.apply(lambda row: map_epitope_residue(row, epitope_seq), axis=1)
         print("Residues mapped")
         print("\nContact map TCR peptide \n", contacts_TCR_p.head())
         
-        # Add TCRen potential
+        # Add TCR-P TCRen potential
         print("Calculating TCRen potential")
-        contacts_TCR_p['TCRen'] = contacts_TCR_p.apply(lambda row: get_TCRen(row, tcr_p_potential, "epitope"), axis=1)
+        contacts_TCR_p['TCRen'] = contacts_TCR_p.apply(lambda row: get_TCRen(row, tcr_p_potential, tcr_id, "epitope"), axis=1)
         contacts_TCR_p['TCRen'] = pd.to_numeric(contacts_TCR_p['TCRen'], errors='coerce')
         total_TCRen_p = contacts_TCR_p['TCRen'].sum()
         print(f"TCRen score for TCR-peptide: {total_TCRen_p}")
@@ -246,7 +240,8 @@ def main():
         contacts_TCR_p.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_TCRen_p.csv"), index=False)
         print(f"Mapped contacts saved to {os.path.join(output_dir, f'{pdb_id}_{tcr_id}_TCRen_p.csv')}") 
         
-        # Processing MHC
+        ##### PROCESS INPUT MHCs #####
+        
         for index, row in mhc_df.iterrows():
             seq_pdb = extract_sequences(pdb_file_path)
             mhc_allele = row['mhc_allele']
@@ -261,9 +256,9 @@ def main():
             print("Residues mapped")
             print("\nContact map TCR MHC \n", contacts_TCR_MHC_updated.head())
             
-            # Add TCRen potential
+            # Add TCR-MHC TCRen potential
             print("Calculating TCRen potential")
-            contacts_TCR_MHC_updated['TCRen'] = contacts_TCR_MHC_updated.apply(lambda row: get_TCRen(row, tcr_mhc_potential, mhc_allele), axis=1)
+            contacts_TCR_MHC_updated['TCRen'] = contacts_TCR_MHC_updated.apply(lambda row: get_TCRen(row, tcr_mhc_potential, tcr_id, mhc_allele), axis=1)
             contacts_TCR_MHC_updated['TCRen'] = pd.to_numeric(contacts_TCR_MHC_updated['TCRen'], errors='coerce')
             total_TCRen_mhc = contacts_TCR_MHC_updated['TCRen'].sum()
             print(f"TCRen score for TCR-MHC: {total_TCRen_mhc}")
@@ -274,3 +269,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
