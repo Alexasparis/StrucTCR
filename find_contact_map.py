@@ -18,6 +18,7 @@ from anarci import anarci
 import pandas as pd
 from tcrdist.repertoire import TCRrep
 import Levenshtein as lev
+import os
 
 from mapping import run_anarci
 from select_nr_set import calculate_sequence_distance
@@ -150,14 +151,17 @@ def find_closest_tcr(df, alpha_seq, beta_seq):
     """
     # Add the new TCR to the DataFrame
     df = add_tcr_to_dataframe(df, alpha_seq, beta_seq, "TCR2")
-    
+    dir_path = os.getcwd()
+
+    # Construct the path to the database file
+    db_file_path = os.path.join(dir_path, 'TCRdist', 'alphabeta_gammadelta_db.tsv')
     # Recreate the TCRrep object with the updated DataFrame
     tr_updated = TCRrep(cell_df=df, 
                         organism='human', 
                         chains=['alpha', 'beta'], 
                         deduplicate=True,
                         compute_distances=True,
-                        db_file='alphabeta_gammadelta_db_human.tsv')
+                        db_file=db_file_path)
     
     # Get the new TCR index (last index)
     new_index = len(df) - 1

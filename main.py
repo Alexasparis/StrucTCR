@@ -35,6 +35,7 @@ def main():
     parser.add_argument("-mhcp", "--mhc_potential", type=str, default='./model/TCRen_TCR_MHC.csv', help='CSV file with TCR-MHC TCRen potential. Format: residue_from,residue_to,TCRen')
     parser.add_argument("-g", "--general_file", type=str, default='./structures_annotation/general.txt', help='Annotation file with chain information for each pdb_file of pdb_folder')
     parser.add_argument("-metric", "--similarity_metric", type=str, default='TCRdist', choices=['TCRdist', 'Levenshtein'], help='Metric to decide which complex to use: TCRdist or Levenshtein')
+    parser.add_argument("-s", "--scores_file", type=str, default='scores.csv', help='Output CSV file for scores (default: scores.csv)')
 
     args = parser.parse_args()
     
@@ -83,49 +84,49 @@ def main():
     
     #####  COMPARING TCRs #####
     
-    #print("\nCreating DataFrame to compare TCRs")
-    #alpha_outputs = []
-    #beta_outputs = []
-    #pdb_ids = []
-    #cdrs_results = []
+    print("\nCreating DataFrame to compare TCRs")
+    alpha_outputs = []
+    beta_outputs = []
+    pdb_ids = []
+    cdrs_results = []
     
-    #for pdb_file in os.listdir(args.pdb_folder):
-        #pdb_path = os.path.join(args.pdb_folder, pdb_file)
-        #pdb_id = pdb_file.split('.')[0]
-        #pdb_ids.append(pdb_id)
-        #alpha_seq, beta_seq, epitope = extract_specific_sequences(pdb_path, seq_dict)
+    for pdb_file in os.listdir(args.pdb_folder):
+        pdb_path = os.path.join(args.pdb_folder, pdb_file)
+        pdb_id = pdb_file.split('.')[0]
+        pdb_ids.append(pdb_id)
+        alpha_seq, beta_seq, epitope = extract_specific_sequences(pdb_path, seq_dict)
         
-        #if alpha_seq and beta_seq:
-            #alpha_anarci = run_anarci(alpha_seq, "alpha")
-            #beta_anarci = run_anarci(beta_seq, "beta")
-            #if args.similarity_metric == "Levenshtein":
-            	#cdrs_parsing = parse_cdrs(alpha_anarci, beta_anarci, epitope)
-            	#cdrs_results.append({
-                	#'pdb_id': pdb_id,
-                	#'cdr1_a': cdrs_parsing['Alpha']['CDR1'],
-                	#'cdr2_a': cdrs_parsing['Alpha']['CDR2'],
-                	#'cdr2.5_a': cdrs_parsing['Alpha']['CDR2.5'],
-                	#'cdr3_a': cdrs_parsing['Alpha']['CDR3'],
-                	#'cdr1_b': cdrs_parsing['Beta']['CDR1'],
-                	#'cdr2_b': cdrs_parsing['Beta']['CDR2'],
-                	#'cdr2.5_b': cdrs_parsing['Beta']['CDR2.5'],
-                	#'cdr3_b': cdrs_parsing['Beta']['CDR3'],
-                	#'epitope': cdrs_parsing['Epitope']})
-            #elif args.similarity_metric == "TCRdist":
-            	#alpha_outputs.append(alpha_anarci)
-            	#beta_outputs.append(beta_anarci)
+        if alpha_seq and beta_seq:
+            alpha_anarci = run_anarci(alpha_seq, "alpha")
+            beta_anarci = run_anarci(beta_seq, "beta")
+            if args.similarity_metric == "Levenshtein":
+            	cdrs_parsing = parse_cdrs(alpha_anarci, beta_anarci, epitope)
+            	cdrs_results.append({
+                	'pdb_id': pdb_id,
+                	'cdr1_a': cdrs_parsing['Alpha']['CDR1'],
+                	'cdr2_a': cdrs_parsing['Alpha']['CDR2'],
+                	'cdr2.5_a': cdrs_parsing['Alpha']['CDR2.5'],
+                	'cdr3_a': cdrs_parsing['Alpha']['CDR3'],
+                	'cdr1_b': cdrs_parsing['Beta']['CDR1'],
+                	'cdr2_b': cdrs_parsing['Beta']['CDR2'],
+                	'cdr2.5_b': cdrs_parsing['Beta']['CDR2.5'],
+                	'cdr3_b': cdrs_parsing['Beta']['CDR3'],
+                	'epitope': cdrs_parsing['Epitope']})
+            elif args.similarity_metric == "TCRdist":
+            	alpha_outputs.append(alpha_anarci)
+            	beta_outputs.append(beta_anarci)
             	
     
     # DataFrame to compute similarities
-    #if args.similarity_metric == "Levenshtein":
-        #df_lev = pd.DataFrame(cdrs_results)
-        #df_lev.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False)
-        #print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
+    if args.similarity_metric == "Levenshtein":
+        df_lev = pd.DataFrame(cdrs_results)
+        df_lev.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False)
+        print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
         
-    #elif args.similarity_metric == "TCRdist":
-        #input_df = create_dataframe(alpha_outputs, beta_outputs, pdb_ids)
-        #input_df.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False) # Non-parsed df with alleles that could not be included in the db of the method
-        #print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
+    elif args.similarity_metric == "TCRdist":
+        input_df = create_dataframe(alpha_outputs, beta_outputs, pdb_ids)
+        input_df.to_csv(os.path.join(output_dir, "pdbs_TCRdata.csv"), index=False) # Non-parsed df with alleles that could not be included in the db of the method
+        print(f"Results saved to {os.path.join(output_dir, 'pdbs_TCRdata.csv')}")
     
     ##### PROCESSING INPUT TCRs #####
     
@@ -308,7 +309,7 @@ def main():
     'score_tcr_p': scores_tcr_p,
     'score_tcr_MHC': scores_tcr_mhc})
     
-    final_csv_path = os.path.join(output_dir, "scores.csv")
+    final_csv_path = os.path.join(output_dir, args.scores_file)
     results_df.to_csv(final_csv_path, index=False)
     print(f"Final results saved to {final_csv_path}")
 
