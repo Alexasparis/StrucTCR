@@ -21,7 +21,7 @@ import Levenshtein as lev
 import os
 
 from mapping import run_anarci
-from select_nr_set import calculate_sequence_distance
+from select_nr_set import calculate_sequence_distance, extract_specific_sequences
 
 
 def parse_CDR3(anarci_output):
@@ -102,7 +102,7 @@ def add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name):
     - df (pd.DataFrame): The DataFrame to which TCR information will be added.
     - alpha_seq (str): The TCR alpha chain sequence.
     - beta_seq (str): The TCR beta chain sequence.
-    - tcr_name (str): identifier for the input TCR.
+    - tcr_name (str): Identifier for the input TCR.
     
     Returns:
     - pd.DataFrame: Updated DataFrame with new TCR information added.
@@ -123,12 +123,12 @@ def add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name):
     # New row as DataFrame
     new_row = pd.DataFrame({
         'pdb_id': [pdb_id],
-        'cdr3_b_aa': [cdr3_beta],
-        'v_b_gene': [v_gene_beta],
-        'j_b_gene': [j_gene_beta],
         'cdr3_a_aa': [cdr3_alpha],
         'v_a_gene': [v_gene_alpha],
         'j_a_gene': [j_gene_alpha],
+        'cdr3_b_aa': [cdr3_beta],
+        'v_b_gene': [v_gene_beta],
+        'j_b_gene': [j_gene_beta],
         'count': [1]
     })
 
@@ -137,7 +137,12 @@ def add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name):
        
     return df
 
-def find_closest_tcr(df, alpha_seq, beta_seq):
+import pandas as pd
+from tcrdist.repertoire import TCRrep
+import pandas as pd
+from tcrdist.repertoire import TCRrep
+
+def find_closest_tcr(df, alpha_seq, beta_seq, epitope, seq_dict, tcr_name):
     """
     Finds the closest TCR to the given sequences.
     
@@ -145,56 +150,93 @@ def find_closest_tcr(df, alpha_seq, beta_seq):
     - df (pd.DataFrame): The DataFrame containing existing TCR information.
     - alpha_seq (str): The TCR alpha chain sequence of the new TCR.
     - beta_seq (str): The TCR beta chain sequence of the new TCR.
+    - epitope (str): The epitope sequence to compare against.
+    - seq_dict (dict): A dictionary mapping PDB IDs to their sequences for extraction.
+    - tcr_name (str): The TCR name for the new entry.
     
     Returns:
-    - str: The pdb_id of the closest TCR.
+    - str: The pdb_id of the closest TCR, ensuring `tcr_name` and `pdb_id` don't match.
     """
     # Add the new TCR to the DataFrame
-    df = add_tcr_to_dataframe(df, alpha_seq, beta_seq, "TCR2")
-    dir_path = os.getcwd()
+    df = add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name)
 
-    # Construct the path to the database file
-    db_file_path = os.path.join(dir_path, 'TCRdist', 'alphabeta_gammadelta_db.tsv')
-    # Recreate the TCRrep object with the updated DataFrame
-    tr_updated = TCRrep(cell_df=df, 
-                        organism='human', 
-                        chains=['alpha', 'beta'], 
-                        deduplicate=True,
-                        compute_distances=True,
-                        db_file=db_file_path)
+    # Extract the last row as a DataFrame (which is the newly added TCR)
+    last_row = df.iloc[[-1]]
+
+    # List to store the results
+    results = []
+
+    # Iterate over each row of the DataFrame except the last one
+    for end_row in range(len(df) - 1):  # Range from 0 to the second-to-last row
+        # Create a new DataFrame with the current row
+        current_row = df.iloc[[end_row]]  # Current row as DataFrame
+        
+        # Check if the current pdb_id matches the new TCR name
+        current_pdb_id = current_row['pdb_id'].values[0]  # Assuming 'pdb_id' is the column name for pdb IDs
+        if current_pdb_id == tcr_name:
+            continue  # Skip if the current pdb_id matches the new TCR name
+        
+        # Construct the path to the database file
+        dir_path = os.getcwd()
+        db_file_path = os.path.join(dir_path, 'TCRdist', 'alphabeta_gammadelta_db.tsv')
+        
+        # Create a new TCRrep for the current row
+        tr_current = TCRrep(cell_df=current_row,
+                            organism='human', 
+                            chains=['alpha', 'beta'], 
+                            compute_distances=False,
+                            db_file=db_file_path)
+
+        # Create another TCRrep for the last row
+        tr_last_row = TCRrep(cell_df=last_row, 
+                             organism='human', 
+                             chains=['alpha', 'beta'], 
+                             compute_distances=False,
+                             db_file=db_file_path)
+
+        # Calculate the distances between the current row and the last row
+        tr_current.compute_rect_distances(df=tr_last_row.clone_df, df2=tr_current.clone_df)
+
+        # Sum the distances of alpha and beta to get the global distance
+        global_distances = [tr_current.rw_alpha[0][i] + tr_current.rw_beta[0][i] for i in range(len(tr_current.rw_alpha[0]))]
+        
+        # Add the global distances to the results list
+        results.append(global_distances)
     
-    # Get the new TCR index (last index)
-    new_index = len(df) - 1
+    # Flatten the results to get only the numbers
+    flattened_results = [item[0] for item in results]
+
+    # Find the minimum value in the list
+    min_value = min(flattened_results)
     
-    # Ensure the new index is within bounds
-    if new_index >= tr_updated.pw_alpha.shape[0]:
-        raise ValueError(f"new_index {new_index} exceeds the number of rows in pw_alpha.")
+    # Get all indices where the value is equal to the minimum value
+    min_indices = [index for index, value in enumerate(flattened_results) if value == min_value]
+
+    # Collect PDB IDs for the minimum distances
+    pdb_ids_with_min_distance = []
+    for index in min_indices:
+        pdb_id = df.iloc[index]['pdb_id']  # Adjust 'pdb_id' to match your actual column name
+        pdb_ids_with_min_distance.append(pdb_id)
+
+    # Check for multiple PDB IDs and calculate distances to the epitope
+    if len(pdb_ids_with_min_distance) > 1:
+        epi_distances = []
+        for pdb_id in pdb_ids_with_min_distance:
+            # Ensure this function returns the correct sequence for the given PDB ID
+            seq_a, seq_b, epitope1 = extract_specific_sequences(f'./pdb_files/{pdb_id}.pdb', seq_dict)  # Assuming it returns the relevant epitope sequence
+            distance = calculate_sequence_distance(epitope1, epitope)  # Compare with the provided epitope
+            epi_distances.append(distance)
     
-    # Compute distances for alpha and beta chains
-    try:
-        distances_alpha = tr_updated.pw_alpha
-        distances_beta = tr_updated.pw_beta
-    except IndexError as e:
-        print(f"IndexError: {e}")
-        return None
+        # Find the minimum distance and corresponding indices
+        min_distance = min(epi_distances)
+        min_indices = [index for index, dist in enumerate(epi_distances) if dist == min_distance]
+
+        # If there are multiple indices with the same minimum distance, take the first one
+        pdb_id = pdb_ids_with_min_distance[min_indices[0]]  # Select the first PDB ID with the minimum distance
+    else:
+        pdb_id = pdb_ids_with_min_distance[0]  # Only one pdb_id, take it
     
-    # Combine alpha and beta chain distances
-    if len(distances_alpha) != len(distances_beta):
-        raise ValueError("Alpha and beta distances must have the same length.")
-    
-    distances_combined = distances_alpha + distances_beta
-    
-    # Find the index of the minimum distance
-    min_distance_index = distances_combined.argmin()
-    
-    # Ensure min_distance_index is within bounds
-    if min_distance_index >= len(df):
-        raise ValueError(f"min_distance_index {min_distance_index} exceeds the number of rows in df.")
-    
-    # Return the pdb_id of the closest TCR
-    closest_tcr_id = df.iloc[min_distance_index]['pdb_id']
-    
-    return closest_tcr_id
+    return pdb_id
     
 # Levenshtein distance
 

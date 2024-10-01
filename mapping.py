@@ -20,6 +20,7 @@ import os
 import re
 import subprocess
 import pandas as pd
+import uuid 
 
 from Bio.Align import PairwiseAligner
 from Bio import PDB
@@ -98,20 +99,20 @@ def run_anarci(sequence, chain_id):
     Returns:
         str: Output from ANARCI.
     """
-    # Define the path for the temporary file
-    temp_fasta = 'temp.fasta'
-    
-    # Write the sequence to the temporary file
+    # Generar un nombre único para el archivo temporal
+    temp_fasta = f'temp_{chain_id}_{uuid.uuid4().hex}.fasta'  # Incluye el ID de la cadena y un UUID
+
+    # Escribir la secuencia en el archivo temporal
     with open(temp_fasta, 'w') as f:
         f.write(f">{chain_id}\n{sequence}\n")
     
-    # Ensure the temporary file is removed after processing
+    # Asegurar que el archivo temporal se elimine después del procesamiento
     try:
-        # Check if file was created successfully
+        # Verificar si el archivo fue creado correctamente
         if not os.path.exists(temp_fasta):
             raise FileNotFoundError(f"{temp_fasta} was not created successfully.")
         
-        # Run ANARCI with IMGT scheme and capture both stdout and stderr
+        # Ejecutar ANARCI con el esquema IMGT y capturar stdout y stderr
         result = subprocess.run(['ANARCI', '-i', temp_fasta, '--scheme', 'imgt'], 
                                 capture_output=True, text=True, check=True)
         return result.stdout
@@ -119,7 +120,7 @@ def run_anarci(sequence, chain_id):
         print(f"ANARCI failed with error:\n{e.stderr}")
         return None
     finally:
-        # Remove the temporary file
+        # Eliminar el archivo temporal
         if os.path.exists(temp_fasta):
             os.remove(temp_fasta)
         

@@ -22,7 +22,7 @@ def calculate_TCRen(df, peptide=False):
 
     if peptide==True:
         residues_p = list('ADEFGHIKLMNPQRSTVWY') #not C
-        all_pairs = pd.DataFrame([(a, b) for a in residues for b in residues_p], columns=['residue_from', 'residue_to'])
+        all_pairs = pd.DataFrame([(a, b) for a in residues_p for b in residues], columns=['residue_from', 'residue_to'])
     else:
         all_pairs = pd.DataFrame([(a, b) for a in residues for b in residues], columns=['residue_from', 'residue_to'])
         
