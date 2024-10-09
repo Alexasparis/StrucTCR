@@ -1,8 +1,5 @@
 # Main function to rank TCRs given an input neoantigenic sequence.
 
-# Example of usage
-# python3 main.py -p ./pdb_files/ -t ./input/input_TCRs.csv -e HPVGEADYFE -m ./input/input_MHCs.csv -pp ./model/TCRen_TCR_p.csv -mhcp ./model/TCRen_TCR_MHC.csv -g ./structures_annotation/general.txt -metric TCRdist -s scores.csv
-
 # Import libraries
 import argparse
 import pandas as pd
@@ -32,6 +29,7 @@ def main():
     parser.add_argument("-t", "--tcr_file", type=str, required=True, help='CSV file with TCRs to process. Format: tcr_id,alpha_seq,beta_seq')
     parser.add_argument("-e", "--epitope_seq", type=str, required=True, help='Epitope sequence')
     parser.add_argument("-m", "--mhc_file", type=str, required=True, help='CSV file with MHCs to process. Format: mhc_allele,mhc_seq')
+    parser.add_argument("-a", "--mhc_allele", type=str, required=False, help='Allele Format A*02:01:01:01')
     parser.add_argument("-pp", "--peptide_potential", type=str, default='./model/TCRen_TCR_p.csv', help='CSV file with TCR-peptide TCRen potential. Format: residue_from,residue_to,TCRen')
     parser.add_argument("-mhcp", "--mhc_potential", type=str, default='./model/TCRen_TCR_MHC.csv', help='CSV file with TCR-MHC TCRen potential. Format: residue_from,residue_to,TCRen')
     parser.add_argument("-g", "--general_file", type=str, default='./structures_annotation/general.txt', help='Annotation file with chain information for each pdb_file of pdb_folder')
@@ -58,7 +56,7 @@ def main():
     scores_tcr_p = []
     scores_tcr_mhc = []
     
-    # Chain dictionary
+    # Chain dictionaries
     chain_dict = {}
     for pdb_id, group in general_df.groupby('pdb.id'):
         chains = {
@@ -97,21 +95,21 @@ def main():
         pdb_id_similar = None
 
         if args.similarity_metric == "TCRdist":
-            similarity_df = pd.read_csv("./structures_annotation/closest_tcrs.csv")
-            similar_tcr = similarity_df[similar_tcr['tcr_id'] == tcr_id]['closest_tcr'].values[0]
+            similarity_df = pd.read_csv("./structures_annotation/closest_tcr_all.csv")
+            similar_tcr = similarity_df[similarity_df['tcr_name'] == tcr_id]['closest_tcr'].values[0]
 
             if isinstance(similar_tcr, str):
-                try:
+                if similar_tcr.startswith("[") and similar_tcr.endswith("]"):
                     pdb_id_similar = ast.literal_eval(similar_tcr)
-                except (ValueError, SyntaxError):
+                else:
                     pdb_id_similar = [similar_tcr]
             else:
-                pdb_id_similar = similar_tcr
+                pdb_id_similar = [similar_tcr]
 
             if len(pdb_id_similar) > 1:
                 distances = []
                 for pdb in pdb_id_similar:
-                    pdb_file_path = os.path.join(args.pdb_folder, f"{pdb}.pdb")
+                    pdb_file_path = os.path.join("./pdb_files", f"{pdb}.pdb")
                     if os.path.isfile(pdb_file_path):
                         a_seq, b_seq, e_seq = extract_specific_sequences(pdb_file_path, seq_dict)
                         distance = calculate_sequence_distance(epitope_seq, e_seq)
@@ -123,15 +121,12 @@ def main():
                     closest_pdb_index = distances.index(min(distances))
                     pdb_id_similar = pdb_id_similar[closest_pdb_index]
                     print(f"Match found for {tcr_id}: {pdb_id_similar}.")
+
             elif len(pdb_id_similar) == 1:
                 pdb_id_similar = pdb_id_similar[0]
                 print(f"Match found for {tcr_id}: {pdb_id_similar}.")
             else:
                 print(f"No similar TCRs found for {tcr_id}. Try with Levenshtein distance.")
-
-    # Si no se encontró ningún pdb_id
-    if not pdb_id_similar:
-        print("No similar TCR found. Try with Levenshtein distance.")
                 
         elif args.similarity_metric == "Levenshtein":
             #df_lev = pd.DataFrame(cdrs_results)
@@ -147,7 +142,7 @@ def main():
             if not os.path.isfile(pdb_file_path):
                 print(f"Error: The file does not exist at {pdb_file_path}")
             else:
-                contacts_df = pd.read_csv(f"./contact_maps/filtered_{pdb_id_similar}_contacts.csv")
+                contacts_df = pd.read_csv(f"./contact_maps/{pdb_id_similar}_contacts.csv")
                 chains = chain_dict.get(pdb_id_similar, {})
                 if all(chains.values()):  # Ensure all chain identifiers are present
                     contacts_TCR_p, contacts_TCR_MHC = filter_contacts(
@@ -220,36 +215,47 @@ def main():
         
         ##### PROCESS INPUT MHCs #####
         
-        for index, row in mhc_df.iterrows():
+        if args.mhc_allele:
+            reference_allele = args.mhc_allele
+            mhc_seq = mhc_df[mhc_df['mhc_allele'] == reference_allele]['mhc_seq'].values[0]
+
+            print(f"\n ## Processing MHC allele: {reference_allele}")
+            
             seq_pdb = extract_sequences(pdb_file_path)
-            mhc_allele = row['mhc_allele']
-            mhc_seq = row['mhc_seq']    
-            print(f"\n ## Processing MHC allele: {mhc_allele}")
             aligned_seq_pdb, aligned_seq_query, score = global_alignment(seq_pdb[chains['mhc_chain']], mhc_seq)
             residues_M = extract_residues_and_resids(pdb_file_path, chains['mhc_chain']) 
             mapped_residues = map_alignment_to_residues(aligned_seq_pdb, aligned_seq_query, residues_M)
-            df_tuples = pd.DataFrame(mapped_residues, columns=['resid', 'mhc_pdb', mhc_allele])
-            contacts_TCR_MHC_updated = pd.merge(contacts_TCR_MHC, df_tuples[['resid', mhc_allele]], left_on='resid_to', right_on='resid', how='left')
+            
+            df_tuples = pd.DataFrame(mapped_residues, columns=['resid', 'mhc_pdb', reference_allele])
+            contacts_TCR_MHC_updated = pd.merge(
+                contacts_TCR_MHC, 
+                df_tuples[['resid', reference_allele]], 
+                left_on='resid_to', 
+                right_on='resid', 
+                how='left'
+            )
             contacts_TCR_MHC_updated = contacts_TCR_MHC_updated.drop(columns=['resid'])
             print("Residues mapped")
-            #print("\nContact map TCR MHC \n", contacts_TCR_MHC_updated.head())
-            
+
             # Add TCR-MHC TCRen potential
             print("Calculating TCRen potential")
-            contacts_TCR_MHC_updated['TCRen'] = contacts_TCR_MHC_updated.apply(lambda row: get_TCRen(row, tcr_mhc_potential, tcr_id, mhc_allele), axis=1)
+            contacts_TCR_MHC_updated['TCRen'] = contacts_TCR_MHC_updated.apply(
+                lambda row: get_TCRen(row, tcr_mhc_potential, tcr_id, reference_allele), 
+                axis=1
+            )
             contacts_TCR_MHC_updated['TCRen'] = pd.to_numeric(contacts_TCR_MHC_updated['TCRen'], errors='coerce')
             total_TCRen_mhc = contacts_TCR_MHC_updated['TCRen'].sum()
-            print(f"     -> TCRen score for TCR-MHC {mhc_allele}: {total_TCRen_mhc}")
-            
-            tcr_ids.append(tcr_id)
-            mhc_alleles.append(mhc_allele)
-            scores_tcr_p.append(total_TCRen_p)  
-            scores_tcr_mhc.append(total_TCRen_mhc) 
-            
-            #print("Saving to csv")
-            #contacts_TCR_MHC_updated.to_csv(os.path.join(output_dir, f"{pdb_id}_{tcr_id}_{mhc_allele}_TCRen_mhc.csv"), index=False)
-            #print(f"Mapped contacts saved to {os.path.join(output_dir, f'{pdb_id}_{tcr_id}_{mhc_allele}_TCRen_mhc.csv')}") 
-            #print("\n")
+            print(f"     -> TCRen score for TCR-MHC {reference_allele}: {total_TCRen_mhc}")
+
+        else:
+            print("No MHC allele provided")
+            total_TCRen_mhc = None
+    
+        # Append results
+        tcr_ids.append(tcr_id)
+        mhc_alleles.append(reference_allele if 'reference_allele' in locals() else None)  # Append None if not found
+        scores_tcr_p.append(total_TCRen_p)  
+        scores_tcr_mhc.append(total_TCRen_mhc)  # Append None if an error occurred
    
     # Scores
     results_df = pd.DataFrame({

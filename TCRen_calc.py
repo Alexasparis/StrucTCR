@@ -1,7 +1,7 @@
 # TCRen_calc
 
 # This file contains functions to calculate TCRen potential from contacts of the training set and given an imput TCR. 
-# 1) calculate_TCRen(df, peptide=False)
+# 1) calculate_TCRen(contacts_df, peptide=False)
 # 2) get_TCRen(row, df_residues, col_id)
 
 #Import libraries
@@ -18,6 +18,7 @@ def calculate_TCRen(df, peptide=False):
     Returns:
         pd.DataFrame: DataFrame with all possible residue pairs and their TCRen potential.
     """
+
     residues = list('ACDEFGHIKLMNPQRSTVWY')  # 20 standard amino acids
 
     if peptide==True:
@@ -31,13 +32,11 @@ def calculate_TCRen(df, peptide=False):
     
     # Add pseudocount to each pair
     contact_counts['count'] += 1  # Add pseudocount
-    
     # Merge with all_pairs to ensure every possible residue pair is included
     contact_counts = all_pairs.merge(contact_counts, on=['residue_from', 'residue_to'], how='left')
-    
     # Replace NaN with pseudocount for missing pairs
     contact_counts['count'] = contact_counts['count'].fillna(1)
-    
+
     # Calculate observed frequencies pobs(a, b)
     total_contacts = contact_counts['count'].sum()
     contact_counts['pobs'] = contact_counts['count'] / total_contacts

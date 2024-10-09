@@ -2,14 +2,13 @@
 
 # This file contains functions to extract contacting residues and filter the resulting dataframe.
 # 1) extract_contacts (pdb_file_list, distance)
-# 2) filter_contacts (contact_df, minimum_n_contacting_atoms)
+# 2) filter_contacts(contacts_df, tcra_chain_id, tcrb_chain_id, peptide_chain_id, mhc_chain_id, threshold_n_atoms)
 
 #Import libraries
 import os
 import pandas as pd
 import numpy as np
 from Bio import PDB
-
 
 residue_mapping = {
     'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
@@ -97,7 +96,7 @@ def extract_contacts(pdb_files, chain_dict, distance=5):
     return pd.DataFrame(contacts, columns=['pdb_id', 'chain_from', 'chain_to', 'residue_from', 'residue_to', 'resid_from', 'resid_to', 'atom_from', 'atom_to', 'dist'])
 
 
-def filter_contacts(contacts, tcra_chain, tcrb_chain, peptide_chain, mhc_chain, threshold=2):
+def filter_contacts(contacts, tcra_chain, tcrb_chain, peptide_chain, mhc_chain, threshold=1):
     """
     Filter contacting residues to get only those with more than a certain number of atoms contacting (default=2).
     Splits the dataframe to get two dataframes with the contacting residues between TCR-peptide and TCR-MHC respectively.

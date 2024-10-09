@@ -3,9 +3,13 @@
 # This file contains functions to find the most similar TCR given an input TCR using tcrdist3. 
 # 1) parse_CDR3 (anarci_output)
 # 2) get_germlines (sequence)
-# 3) create_dataframe (alpha_outputs_lis, beta_outputs_list, pdb_id_list)
+
+# TCRdist
+# 3) create_dataframe (alpha_outputs_list, beta_outputs_list, pdb_id_list)
 # 4) add_tcr_to_dataframe (df, alpha_seq, beta_seq, tcr_name)
 # 5) find_closest_tcr(df, alpha_seq, beta_seq, tcr_name)
+
+# Levenshtein distance
 # 6) parse_cdrs(alfa_anarci_output, beta_anarci_output, epitope)
 # 7) calculate_sequence_distance(seq1, seq2)
 # 8) compute_pairwise_distances (cdrs_alpha1, cdrs_alpha2, cdrs_beta1, cdrs_beta2, epitope1, epitope2)

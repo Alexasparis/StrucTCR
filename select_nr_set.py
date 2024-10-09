@@ -1,10 +1,11 @@
+#!/usr/bin/env python3
 # Select non redundant structures:
 
 # Example of usage:
-# python3 select_nr_set.py --general_file ./structures_annotation/general.txt --pdb_folder all_pdb_files/ --output_csv PDB_summay_clustering.csv --nonred_folder nr_pdbs/ --distance_threshold 6
+# python3 select_nr_set.py --general ./structures_annotation/general.txt --pdb_folder pdb_files --output summary_clustering.pdb --nr_folder pdb_nr --distance 6
 
-
-# This file contains functions to map TCR residues to IMGT numbering and to map neoantigen residues to reference epitope. 
+# This file contains functions to cluster pdb_files according to CDR3a+CDR3b+peptide Levenshtein distance.
+#  
 # 1) parse_CDR3 (anarci_output)
 # 2) parse_general_file (general.txt)
 # 3) extract_specific_sequences (pdb_file, chain_types_dict)
@@ -22,6 +23,7 @@ import shutil
 import numpy as np
 import pandas as pd
 import argparse
+
 from Levenshtein import distance as levenshtein_distance
 from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import linkage, cut_tree
@@ -191,7 +193,7 @@ def main():
     args = parser.parse_args()
 
     print("Parsing the general file...")
-    chain_types_dict = parse_general_file(args.general_file)
+    chain_types_dict = parse_general_file(args.general)
     
     print("Listing PDB files...")
     pdb_files = [os.path.join(args.pdb_folder, f) for f in os.listdir(args.pdb_folder) if f.endswith('.pdb')]
@@ -235,7 +237,7 @@ def main():
             distance_matrix[j, i] = dist_sum
 
     print("Performing clustering...")
-    clusters = cluster_pdbs(distance_matrix, distance_threshold=args.distance_threshold)
+    clusters = cluster_pdbs(distance_matrix, distance_threshold=args.distance)
 
     print("Creating DataFrame with clusters...")
     pdb_ids = [seq['pdb_id'] for seq in sequences]
@@ -255,14 +257,14 @@ def main():
     df_sequences = df_sequences.sort_values(by='cluster_id')
     
     # Save to CSV
-    df_sequences.to_csv(args.output_csv, index=False)
+    df_sequences.to_csv(args.output, index=False)
     
-    print(f"Summary DataFrame saved to '{args.output_csv}'.")
+    print(f"Summary DataFrame saved to '{args.output}'.")
 
     # Optional: Copy non-redundant PDB files to a new directory
     print("Copying non-redundant PDB files...")
-    copy_non_redundant_pdbs(args.pdb_folder, args.nonred_folder, df_non_redundant)
-    print(f"Non-redundant PDB files copied to '{args.nonred_folder}'.")
+    copy_non_redundant_pdbs(args.pdb_folder, args.nr_folder, df_non_redundant)
+    print(f"Non-redundant PDB files copied to '{args.nr_folder}'.")
 
 if __name__ == "__main__":
     main()
