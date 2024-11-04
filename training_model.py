@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Train_model
 
 # This is the main function to train the model and extract the potential matrices from a given pdb_file database composed by TCR-pMHC complexes.
@@ -37,6 +38,7 @@ def main():
     
     # Read chain information from general.txt
     df = pd.read_csv(args.general, sep='\t')
+    
     chain_dict = {}
     
     for pdb_id, group in df.groupby('pdb.id'):
@@ -83,7 +85,7 @@ def main():
                 chains['tcrb_chain'],
                 chains['peptide_chain'],
                 chains['mhc_chain'],
-                threshold=2)
+                threshold=1)
         
         # Accumulate the filtered contacts for each PDB
             all_contacts_TCR_p = pd.concat([all_contacts_TCR_p, contacts_TCR_p], ignore_index=True)

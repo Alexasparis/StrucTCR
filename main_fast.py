@@ -95,8 +95,8 @@ def main():
         pdb_id_similar = None
 
         if args.similarity_metric == "TCRdist":
-            similarity_df = pd.read_csv("./structures_annotation/closest_tcr_all.csv")
-            similar_tcr = similarity_df[similarity_df['tcr_name'] == tcr_id]['closest_tcr'].values[0]
+            similarity_df = pd.read_csv("./structures_annotation/closest_tcr.csv")
+            similar_tcr = similarity_df[similarity_df['tcr_name'] == str(tcr_id)]['closest_tcr'].values[0]
 
             if isinstance(similar_tcr, str):
                 if similar_tcr.startswith("[") and similar_tcr.endswith("]"):
@@ -151,7 +151,7 @@ def main():
                         chains['tcrb_chain'],
                         chains['peptide_chain'],
                         chains['mhc_chain'],
-                        threshold=2)
+                        threshold=1)
                     
             # Mapping with IMGT numbering
             print("Renumbering sequences with IMGT convention")
@@ -201,7 +201,7 @@ def main():
         print(f"Processing epitope: {epitope_seq}")
         contacts_TCR_p['epitope'] = contacts_TCR_p.apply(lambda row: map_epitope_residue(row, epitope_seq), axis=1)
         print("Residues mapped")
-        #print("\nContact map TCR peptide \n", contacts_TCR_p.head())
+        print("\nContact map TCR peptide \n", contacts_TCR_p.head())
         
 	# Add TCR-P TCRen potential
         print("Calculating TCRen potential")
