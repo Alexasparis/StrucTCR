@@ -306,8 +306,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 7pbe,E,A,S,Q,99,155,CA,NE2,4.267847
 7pbe,E,A,S,Q,99,155,C,OE1,4.748448
 7pbe,E,A,G,Q,100,155,N,OE1,4.8339453
-7pbe,E,A,X,K,301,146,O1,CE,3.8439949
-7pbe,E,A,X,K,301,146,O1,NZ,4.0335884
 7pbe,D,C,A,Y,29,1,CB,CE1,4.3796287
 7pbe,D,C,A,Y,29,1,CB,CZ,4.55756
 7pbe,D,C,A,Y,29,1,CB,OH,3.8203735
@@ -598,5 +596,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 7pbe,E,C,G,R,100,5,N,CZ,4.9552884
 7pbe,E,C,G,R,100,5,N,NH1,4.0661373
 7pbe,E,C,G,R,100,5,CA,NH1,4.504047
-7pbe,E,C,X,L,301,8,O1,CD1,4.8949356
-7pbe,E,C,X,L,301,8,O3,CD1,4.643376

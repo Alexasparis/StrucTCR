@@ -7,10 +7,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,I,E,49,154,N,OE2,4.8495564
 5e9d,D,A,I,E,49,154,CA,OE2,4.3313117
 5e9d,D,A,I,E,49,154,C,OE2,4.80107
-5e9d,D,A,I,X,49,310,CA,O,4.2216864
-5e9d,D,A,I,X,49,310,C,O,3.994517
-5e9d,D,A,I,X,49,310,CB,O,4.8954587
-5e9d,D,A,I,X,49,310,CG1,O,4.247574
 5e9d,D,A,Y,E,50,154,N,OE2,4.407414
 5e9d,D,A,Y,E,50,154,CB,O,4.637512
 5e9d,D,A,Y,E,50,154,CB,CG,4.944917
@@ -52,13 +48,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,Y,A,50,158,O,CB,3.7650795
 5e9d,D,A,Y,A,50,158,CB,CB,3.633144
 5e9d,D,A,Y,A,50,158,CG,CB,4.855059
-5e9d,D,A,Y,X,50,310,N,O,2.923722
-5e9d,D,A,Y,X,50,310,CA,O,3.4783084
-5e9d,D,A,Y,X,50,310,C,O,3.682181
-5e9d,D,A,Y,X,50,310,O,O,4.8646917
-5e9d,D,A,Y,X,50,310,CB,O,3.455706
-5e9d,D,A,Y,X,50,310,CG,O,4.18915
-5e9d,D,A,Y,X,50,310,CD2,O,3.9298809
 5e9d,D,A,S,E,51,154,OG,O,4.378517
 5e9d,D,A,S,R,51,157,CB,NH1,4.622274
 5e9d,D,A,S,R,51,157,OG,C,4.6537476
@@ -76,12 +65,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,S,A,51,158,OG,CA,3.4406197
 5e9d,D,A,S,A,51,158,OG,C,4.8101587
 5e9d,D,A,S,A,51,158,OG,CB,3.161991
-5e9d,D,A,S,X,51,310,N,O,2.9923952
-5e9d,D,A,S,X,51,310,CA,O,3.985918
-5e9d,D,A,S,X,51,310,C,O,4.920069
-5e9d,D,A,S,X,51,310,O,O,4.791244
-5e9d,D,A,S,X,51,310,CB,O,3.8161056
-5e9d,D,A,S,X,51,310,OG,O,3.1764517
 5e9d,D,A,K,E,55,154,CG,OE2,4.50881
 5e9d,D,A,K,E,55,154,CD,CD,4.363449
 5e9d,D,A,K,E,55,154,CD,OE1,4.755375
@@ -93,7 +76,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,K,E,55,154,NZ,CD,3.2551103
 5e9d,D,A,K,E,55,154,NZ,OE1,3.0037959
 5e9d,D,A,K,E,55,154,NZ,OE2,2.7762654
-5e9d,D,A,K,X,55,310,CD,O,4.800355
 5e9d,D,A,K,T,66,163,NZ,OG1,4.6282177
 5e9d,D,A,Y,G,93,62,OH,CA,4.74489
 5e9d,D,A,Y,G,93,62,OH,O,4.9386663
@@ -118,7 +100,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,Y,K,93,66,OH,CD,4.1145434
 5e9d,D,A,Y,K,93,66,OH,CE,3.258579
 5e9d,D,A,Y,K,93,66,OH,NZ,3.7694268
-5e9d,D,A,Y,X,93,308,OH,O,4.427397
 5e9d,D,A,S,Q,94,155,OG,OE1,4.438687
 5e9d,D,A,W,R,95,65,CB,CZ,4.8464246
 5e9d,D,A,W,R,95,65,CB,NH2,4.0256743
@@ -176,9 +157,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,A,W,A,95,69,CZ2,CB,4.2777395
 5e9d,D,A,W,A,95,69,CZ3,CB,3.5327737
 5e9d,D,A,W,A,95,69,CH2,CB,3.593995
-5e9d,D,A,X,A,202,158,O,C,4.873933
-5e9d,D,A,X,A,202,158,O,O,4.9112415
-5e9d,D,A,X,A,202,158,O,CB,3.926025
 5e9d,E,A,W,A,97,69,CZ2,CA,4.5474176
 5e9d,E,A,W,A,97,69,CZ2,O,4.634448
 5e9d,E,A,W,A,97,69,CZ2,CB,4.0048223
@@ -228,7 +206,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,E,A,G,A,100,150,O,O,4.751627
 5e9d,E,A,G,A,100,150,O,CB,4.3242965
 5e9d,E,A,V,Q,102,155,CG2,NE2,4.445182
-5e9d,E,A,X,R,212,65,O,NH2,4.5245786
 5e9d,D,C,T,I,30,5,C,CD1,4.937439
 5e9d,D,C,T,I,30,5,O,CD1,4.3182054
 5e9d,D,C,T,I,30,5,CB,CG1,4.921502
@@ -238,8 +215,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,C,T,I,30,5,OG1,CG2,3.486293
 5e9d,D,C,T,I,30,5,OG1,CD1,4.653289
 5e9d,D,C,T,I,30,5,CG2,CG2,4.917615
-5e9d,D,C,T,X,30,102,CB,O,4.6775784
-5e9d,D,C,T,X,30,102,CG2,O,3.9763057
 5e9d,D,C,S,I,31,5,OG,CG2,3.8513775
 5e9d,D,C,Y,I,50,5,CB,CD1,4.5662665
 5e9d,D,C,Y,I,50,5,CG,CD1,4.512668
@@ -271,8 +246,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,C,Y,I,93,5,N,CG2,4.7814293
 5e9d,D,C,Y,I,93,5,CA,CG2,4.2637024
 5e9d,D,C,Y,I,93,5,C,CG2,4.340644
-5e9d,D,C,Y,X,93,102,CD1,O,4.959943
-5e9d,D,C,Y,X,93,102,CE1,O,4.7782555
 5e9d,D,C,S,G,94,4,N,C,4.344418
 5e9d,D,C,S,G,94,4,N,O,3.1647582
 5e9d,D,C,S,G,94,4,CA,O,4.248861
@@ -288,8 +261,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,C,S,I,94,5,OG,CB,4.200215
 5e9d,D,C,S,I,94,5,OG,CG2,3.9839349
 5e9d,D,C,S,G,94,6,OG,N,4.323177
-5e9d,D,C,S,X,94,101,CB,O,4.5123544
-5e9d,D,C,S,X,94,101,OG,O,3.6124992
 5e9d,D,C,W,G,95,4,CE3,O,4.6906366
 5e9d,D,C,W,G,95,4,CZ2,O,4.863385
 5e9d,D,C,W,G,95,4,CZ3,C,4.841725
@@ -297,8 +268,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,D,C,W,G,95,4,CH2,CA,4.549242
 5e9d,D,C,W,G,95,4,CH2,C,4.734407
 5e9d,D,C,W,G,95,4,CH2,O,4.1666927
-5e9d,D,C,W,X,95,101,CZ3,O,4.5345526
-5e9d,D,C,X,I,202,5,O,CD1,3.7757266
 5e9d,E,C,W,I,97,7,CE3,O,4.18242
 5e9d,E,C,W,I,97,7,CZ3,C,4.7936096
 5e9d,E,C,W,I,97,7,CZ3,O,3.5859742
@@ -308,8 +277,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5e9d,E,C,W,L,97,8,O,CG,3.858834
 5e9d,E,C,W,L,97,8,O,CD1,3.924172
 5e9d,E,C,W,L,97,8,O,CD2,4.630814
-5e9d,E,C,W,X,97,101,CE3,O,4.497219
-5e9d,E,C,W,X,97,101,CZ3,O,4.0729346
 5e9d,E,C,M,L,98,8,CA,CA,4.8880825
 5e9d,E,C,M,L,98,8,CA,CG,4.778868
 5e9d,E,C,M,L,98,8,C,CA,4.6569057

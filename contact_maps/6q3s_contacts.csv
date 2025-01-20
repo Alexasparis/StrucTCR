@@ -590,8 +590,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6q3s,D,C,Y,W,100,5,CZ,N,4.926822
 6q3s,D,C,Y,W,100,5,OH,N,4.4319506
 6q3s,D,C,Y,W,100,5,OH,CA,4.843621
-6q3s,D,C,X,M,301,4,O,SD,3.9116092
-6q3s,D,C,X,M,301,4,O,CE,4.056849
 6q3s,E,C,N,Q,27,8,CA,NE2,4.8265595
 6q3s,E,C,N,Q,27,8,C,CD,4.8401575
 6q3s,E,C,N,Q,27,8,C,OE1,4.728396

@@ -371,10 +371,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 2jcc,F,A,Y,Q,100,155,CE2,OE1,4.75728
 2jcc,F,A,Y,Q,100,155,CE2,NE2,3.8297164
 2jcc,F,A,Y,Q,100,155,CZ,NE2,4.938246
-2jcc,F,A,X,T,2001,73,O,CA,4.8627973
-2jcc,F,A,X,T,2001,73,O,CB,4.2625113
-2jcc,F,A,X,T,2001,73,O,OG1,3.1735826
-2jcc,F,A,X,T,2001,73,O,CG2,4.284117
 2jcc,E,C,F,F,93,5,CE2,CD1,3.909833
 2jcc,E,C,F,F,93,5,CE2,CE1,3.9842768
 2jcc,E,C,F,F,93,5,CZ,CD1,3.9141815
@@ -577,13 +573,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 2jcc,F,C,Y,F,100,5,CD2,CE1,4.621818
 2jcc,F,C,Y,F,100,5,CE2,CE1,4.799269
 2jcc,F,C,Y,F,100,5,CE2,CZ,4.811172
-2jcc,F,C,X,F,2001,6,O,CA,4.2033324
-2jcc,F,C,X,F,2001,6,O,C,3.7347267
-2jcc,F,C,X,F,2001,6,O,O,2.6707575
-2jcc,F,C,X,F,2001,6,O,CB,3.4361384
-2jcc,F,C,X,F,2001,6,O,CG,4.4951587
-2jcc,F,C,X,F,2001,6,O,CD2,4.6696625
-2jcc,F,C,X,P,2001,7,O,N,4.8846297
-2jcc,F,C,X,P,2001,7,O,C,4.938652
-2jcc,F,C,X,P,2001,7,O,O,4.9417906
-2jcc,F,C,X,V,2001,8,O,CG1,4.069956

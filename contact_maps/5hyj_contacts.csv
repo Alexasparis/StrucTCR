@@ -427,5 +427,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5hyj,E,C,W,A,97,8,CH2,N,4.3496857
 5hyj,E,C,W,A,97,8,CH2,CA,4.56867
 5hyj,E,C,W,A,97,8,CH2,CB,3.870963
-5hyj,E,C,X,A,312,9,O,N,4.9667926
-5hyj,E,C,X,A,312,9,O,CB,4.384575

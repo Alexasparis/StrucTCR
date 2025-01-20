@@ -1,10 +1,10 @@
 # Mapping
 
 # This file contains functions to map TCR residues to imgt numbering and to map neoantigen residues to reference epitope. 
-# 1) extract_sequences (pdb_file)
-# 2) extract_residues_and_resids (pdb_file, chain_id)
-# 3) run_anarci (sequence, chain_id)
-# 4) parse_anarci_output (anarci_output)
+# 1) extract_residues_and_resids (pdb_file, chain_id)
+# 2) run_anarci (sequence, chain_id)
+# 3) parse_anarci_output (anarci_output)
+# 4) parse_CDR3(anarci_output)
 # 5) map_imgt_to_original (imgt_seq_tuple, pdb_resids_tuple)
 # 6) list_to_dict(mapping_list)
 # 7) get_imgt_mapping_dict (pdb_id, chain_id, mapping_dict)
@@ -16,45 +16,15 @@
 # 13) map_alignment_to_residues(aligned_seq_pdb, aligned_seq_query, residues_tupple)
 
 #Import libraries:
-import os
 import re
 import subprocess
 import pandas as pd
-import uuid 
-
+import concurrent
 from Bio.Align import PairwiseAligner
 from Bio import PDB
-from extract_contacts import residue_mapping
 
 
 ####### MAP TCR #######
-
-def extract_sequences(pdb_file):
-    """
-    Extract sequences for all chains from a PDB file.
-
-    Args:
-        pdb_file (str): Path to the PDB file.
-
-    Returns:
-        dict: Dictionary with chain IDs as keys and sequences as values.
-    """
-    parser = PDB.PDBParser(QUIET=True)
-    structure = parser.get_structure('structure', pdb_file)
-    sequences = {}
-
-    for model in structure:
-        for chain in model.get_chains():
-            chain_id = chain.get_id()
-            sequence = []
-            for residue in chain:
-                if PDB.is_aa(residue):  # Check if the residue is an amino acid
-                    res_name = residue.get_resname()
-                    sequence.append(residue_mapping.get(res_name, 'X'))  # 'X' for unknown residues
-            # Join one-letter codes to form the sequence
-            sequences[chain_id] = ''.join(sequence)
-    
-    return sequences
     
 def extract_residues_and_resids(pdb_file, chain_id):
     """
@@ -90,39 +60,27 @@ def extract_residues_and_resids(pdb_file, chain_id):
 
 def run_anarci(sequence, chain_id):
     """
-    Run ANARCI with the given sequence and chain ID.
-
-    Args:
-        sequence (str): Sequence in one-letter codes.
-        chain_id (str): Chain ID for identification.
-
-    Returns:
-        str: Output from ANARCI.
+    Execute ANARCI to assign IMGT numbering to a TCR sequence.
     """
-    # Generar un nombre único para el archivo temporal
-    temp_fasta = f'temp_{chain_id}_{uuid.uuid4().hex}.fasta'  # Incluye el ID de la cadena y un UUID
-
-    # Escribir la secuencia en el archivo temporal
-    with open(temp_fasta, 'w') as f:
-        f.write(f">{chain_id}\n{sequence}\n")
-    
-    # Asegurar que el archivo temporal se elimine después del procesamiento
     try:
-        # Verificar si el archivo fue creado correctamente
-        if not os.path.exists(temp_fasta):
-            raise FileNotFoundError(f"{temp_fasta} was not created successfully.")
-        
-        # Ejecutar ANARCI con el esquema IMGT y capturar stdout y stderr
-        result = subprocess.run(['ANARCI', '-i', temp_fasta, '--scheme', 'imgt'], 
-                                capture_output=True, text=True, check=True)
+        command=f"ANARCI -i {sequence} --scheme imgt"
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"ANARCI failed with error:\n{e.stderr}")
-        return None
-    finally:
-        # Eliminar el archivo temporal
-        if os.path.exists(temp_fasta):
-            os.remove(temp_fasta)
+        return f"Error with {chain_id}: {e.stderr}"
+
+def run_anarci_parallel(sequences, chain_ids):
+    results = {}
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_chain = {executor.submit(run_anarci, seq, chain): chain for seq, chain in zip(sequences, chain_ids)}
+        for future in concurrent.futures.as_completed(future_to_chain):
+            chain_id = future_to_chain[future]
+            try:
+                result = future.result()  
+                results[chain_id] = result
+            except Exception as exc:
+                print(f'Error processing {chain_id}: {exc}')
+    return results
         
 def parse_anarci_output(anarci_output):
     """
@@ -149,6 +107,24 @@ def parse_anarci_output(anarci_output):
     
     return imgt_numbered_seq
 
+def parse_CDR3(anarci_output):
+    cdr3, seq = "", ""
+    for i in anarci_output.split("\n"):
+        if i and i[0] != "#" and i[0] != "/":
+            parts = i.rstrip().split()
+            if len(parts) >= 3:
+                _, num, *residues = parts
+                num = int(num)  
+                res = residues[-1]  
+                if res != "-":
+                    seq += res
+                    if 104 <= num <= 118: #105-117
+                        cdr3 += res
+            else:
+                print(f"Línea inesperada: {parts}")
+    
+    return cdr3, seq
+
 def map_imgt_to_original(imgt_numbered_seq, pdb_resids):
     """
     Map the original numbering of a sequence from the PDB 'resids' to the IMGT numbering.
@@ -161,21 +137,20 @@ def map_imgt_to_original(imgt_numbered_seq, pdb_resids):
         list of tuples: A list where each tuple contains (original_resid, IMGT_number, residue).
     """
     mapping = []
-    pdb_resid_index = 0  # Index to keep track of the PDB resids
-
+    pdb_resid_index = 0  # Index for PDB residues
     for imgt_pos, residue in imgt_numbered_seq:
-        if residue != "-":  # If it's not a gap, map to the original PDB resid
-            if pdb_resid_index < len(pdb_resids):
-                original_resid, _ = pdb_resids[pdb_resid_index]
-                mapping.append((original_resid, imgt_pos, residue))
-                pdb_resid_index += 1
+        if residue != "-":  # Only process non-gap residues in IMGT
+            for original_resid, residue1 in pdb_resids[pdb_resid_index:]:
+                if residue1 == residue:
+                    mapping.append((original_resid, imgt_pos, residue))
+                    pdb_resid_index += 1
+                    break
+                else:
+                    pdb_resid_index += 1
             else:
-                # This condition should not happen unless there's a mismatch between PDB resids and the sequence length
                 mapping.append((None, imgt_pos, residue))
         else:
-            # Gaps in IMGT numbering don't correspond to any original PDB resid
             mapping.append((None, imgt_pos, residue))
-    
     return mapping
 
 def list_to_dict(mapping_list):
@@ -354,4 +329,3 @@ def map_alignment_to_residues(aligned_seq_pdb, aligned_seq_query, residues_M):
         mapped_residues.append((pdb_resid, pdb_res if aligned_seq_pdb[i] != '-' else '-', query_res))
     
     return mapped_residues
-

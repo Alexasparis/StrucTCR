@@ -332,10 +332,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 4qrr,E,A,R,N,30,80,NH1,OD1,2.7589116
 4qrr,E,A,R,N,30,80,NH1,ND2,3.5584452
 4qrr,E,A,R,N,30,80,NH2,OD1,4.218898
-4qrr,E,A,R,X,30,305,NE,O,4.711821
-4qrr,E,A,R,X,30,305,CZ,O,3.38453
-4qrr,E,A,R,X,30,305,NH1,O,2.9997187
-4qrr,E,A,R,X,30,305,NH2,O,2.8934834
 4qrr,E,A,F,E,57,76,CD2,CG,4.733185
 4qrr,E,A,F,E,57,76,CD2,CD,4.194348
 4qrr,E,A,F,E,57,76,CD2,OE1,4.0719175

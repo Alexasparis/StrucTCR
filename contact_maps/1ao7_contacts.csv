@@ -563,4 +563,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 1ao7,E,C,P,Y,103,5,CG,CZ,4.2743444
 1ao7,E,C,P,Y,103,5,CG,OH,4.261942
 1ao7,E,C,P,Y,103,5,CD,CE2,4.7545843
-1ao7,E,C,X,Y,249,8,O,OH,4.736629

@@ -163,8 +163,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5c09,E,A,A,Q,101,155,CB,CD,4.332882
 5c09,E,A,A,Q,101,155,CB,OE1,4.088891
 5c09,E,A,A,Q,101,155,CB,NE2,4.870974
-5c09,E,A,A,X,101,409,O,O,4.9824486
-5c09,E,A,A,X,101,409,CB,O,4.4285116
 5c09,D,C,R,P,92,5,CZ,CG,4.5013685
 5c09,D,C,R,P,92,5,CZ,CD,4.912697
 5c09,D,C,R,P,92,5,NH1,CG,3.6426876

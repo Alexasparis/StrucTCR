@@ -239,7 +239,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3kps,D,A,Y,Q,100,72,CZ,OE1,4.98702
 3kps,D,A,Y,Q,100,72,CZ,NE2,3.8850312
 3kps,D,A,Y,Q,100,72,OH,NE2,4.7512183
-3kps,D,A,X,Q,211,155,O,NE2,4.9119353
 3kps,E,A,V,E,30,76,CB,CG,4.7611175
 3kps,E,A,V,E,30,76,CB,CD,4.7123313
 3kps,E,A,V,E,30,76,CB,OE2,4.6864815
@@ -522,14 +521,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3kps,D,C,Y,A,100,6,CA,CB,4.8258295
 3kps,D,C,Y,A,100,6,C,CB,4.9399433
 3kps,D,C,Y,A,100,6,O,CB,4.5898128
-3kps,D,C,X,Y,211,3,O,CA,4.5237527
-3kps,D,C,X,Y,211,3,O,C,4.5909314
-3kps,D,C,X,Y,211,3,O,CB,4.570385
-3kps,D,C,X,L,211,4,O,N,3.7051487
-3kps,D,C,X,L,211,4,O,CA,4.5014358
-3kps,D,C,X,L,211,4,O,C,4.971025
-3kps,D,C,X,L,211,4,O,O,4.44943
-3kps,D,C,X,L,211,4,O,CB,4.3253684
 3kps,E,C,G,T,97,8,N,OG1,4.948406
 3kps,E,C,G,T,97,8,CA,OG1,3.919815
 3kps,E,C,G,T,97,8,C,OG1,4.2463484

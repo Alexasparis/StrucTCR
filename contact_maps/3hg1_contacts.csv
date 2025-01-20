@@ -313,7 +313,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3hg1,E,A,T,Q,100,155,OG1,CD,4.7105927
 3hg1,E,A,T,Q,100,155,OG1,NE2,4.1795325
 3hg1,E,A,T,Q,100,155,CG2,NE2,4.3637915
-3hg1,E,A,X,Q,922,72,O,NE2,4.491302
 3hg1,D,C,G,E,29,1,CA,CD,4.5314474
 3hg1,D,C,G,E,29,1,CA,OE1,4.8485813
 3hg1,D,C,G,E,29,1,CA,OE2,3.9402475
@@ -382,8 +381,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3hg1,D,C,N,I,92,5,CG,CG2,4.652999
 3hg1,D,C,N,I,92,5,ND2,CB,4.797274
 3hg1,D,C,N,I,92,5,ND2,CG2,3.3719757
-3hg1,E,C,E,X,95,929,CB,O,4.8508873
-3hg1,E,C,E,X,95,929,OE1,O,4.002218
 3hg1,E,C,T,I,96,7,O,O,4.8191776
 3hg1,E,C,T,L,96,8,O,CA,4.726222
 3hg1,E,C,T,L,96,8,O,CD2,4.430775
@@ -394,9 +391,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3hg1,E,C,T,T,96,9,OG1,OG1,3.9953783
 3hg1,E,C,T,T,96,9,CG2,CB,4.707272
 3hg1,E,C,T,T,96,9,CG2,OG1,3.4956906
-3hg1,E,C,T,X,96,929,C,O,4.6219482
-3hg1,E,C,T,X,96,929,O,O,3.505696
-3hg1,E,C,T,X,96,929,CG2,O,3.820949
 3hg1,E,C,G,I,97,7,CA,O,4.0423293
 3hg1,E,C,G,I,97,7,C,O,4.0122085
 3hg1,E,C,L,A,98,3,CG,O,4.3731847

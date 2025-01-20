@@ -112,8 +112,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rsy,D,A,L,Q,53,156,CD2,CB,3.898306
 6rsy,D,A,L,A,53,159,CD2,CB,4.9067073
 6rsy,D,A,N,E,55,155,OD1,OE1,4.5011125
-6rsy,D,A,N,X,55,427,CG,O,4.888492
-6rsy,D,A,N,X,55,427,ND2,O,4.579406
 6rsy,D,A,E,E,57,155,CD,OE1,4.991775
 6rsy,D,A,E,E,57,155,OE2,OE1,4.1735754
 6rsy,D,A,T,K,95,67,O,CG,4.646803
@@ -217,14 +215,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rsy,D,A,Y,K,100,67,OH,CD,4.429921
 6rsy,D,A,Y,A,100,70,CZ,CB,4.9868984
 6rsy,D,A,Y,A,100,70,OH,CB,4.571843
-6rsy,D,A,X,A,302,159,O,CA,4.9692817
-6rsy,D,A,X,A,302,159,O,CB,3.9793565
-6rsy,D,A,X,T,305,164,O,OG1,4.9714584
-6rsy,D,A,X,T,305,164,O,CG2,4.0621
-6rsy,D,A,X,W,305,168,O,CD1,4.693409
-6rsy,D,A,X,W,305,168,O,NE1,3.823506
-6rsy,D,A,X,W,305,168,O,CE2,4.5238147
-6rsy,D,A,X,W,305,168,O,CZ2,4.6674075
 6rsy,E,A,N,V,31,77,OD1,CG1,4.726284
 6rsy,E,A,N,V,31,77,OD1,CG2,4.728033
 6rsy,E,A,Y,R,49,66,CD2,CG,4.944954
@@ -339,8 +329,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rsy,E,A,L,A,56,70,CD1,CA,4.013194
 6rsy,E,A,L,A,56,70,CD1,CB,4.0603175
 6rsy,E,A,L,Q,56,73,CD1,CG,4.9702206
-6rsy,E,A,L,X,56,403,C,O,4.11667
-6rsy,E,A,L,X,56,403,O,O,3.3142412
 6rsy,E,A,E,R,57,66,N,CD,4.390345
 6rsy,E,A,E,R,57,66,N,NH1,4.6293645
 6rsy,E,A,E,R,57,66,CA,CD,4.334155
@@ -370,13 +358,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rsy,E,A,E,R,57,66,OE2,NE,4.511874
 6rsy,E,A,E,R,57,66,OE2,CZ,4.5463796
 6rsy,E,A,E,R,57,66,OE2,NH2,4.5640907
-6rsy,E,A,E,X,57,403,N,O,4.3093376
-6rsy,E,A,E,X,57,403,CA,O,3.6534724
-6rsy,E,A,E,X,57,403,C,O,4.3080873
-6rsy,E,A,E,X,57,403,CB,O,4.4904327
-6rsy,E,A,E,X,57,403,CG,O,4.2946367
-6rsy,E,A,K,X,58,403,N,O,3.8633077
-6rsy,E,A,K,X,58,403,O,O,4.7726545
 6rsy,E,A,L,A,97,151,CD2,CA,4.8764267
 6rsy,E,A,L,A,97,151,CD2,CB,4.0316744
 6rsy,E,A,F,K,99,147,CE1,O,4.84367
@@ -546,10 +527,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rsy,D,C,Y,N,100,5,CZ,OD1,4.71619
 6rsy,D,C,Y,N,100,5,OH,N,4.9028053
 6rsy,D,C,Y,N,100,5,OH,OD1,4.731311
-6rsy,D,C,X,R,305,1,O,CD,3.990166
-6rsy,D,C,X,R,305,1,O,NE,4.708266
-6rsy,D,C,X,R,305,1,O,CZ,4.5168953
-6rsy,D,C,X,R,305,1,O,NH2,3.473493
 6rsy,E,C,N,Y,31,8,CA,OH,4.7542267
 6rsy,E,C,N,Y,31,8,CB,CD1,4.989361
 6rsy,E,C,N,Y,31,8,CB,CD2,4.5601945

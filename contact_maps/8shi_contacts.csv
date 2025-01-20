@@ -357,9 +357,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 8shi,H,C,Y,R,95,5,OH,NE,4.228698
 8shi,H,C,Y,R,95,5,OH,CZ,4.643651
 8shi,H,C,Y,R,95,5,OH,NH2,4.4318233
-8shi,H,C,Y,X,95,6,CE2,O,4.146904
-8shi,H,C,Y,X,95,6,CZ,O,4.781887
-8shi,H,C,Y,X,95,6,OH,O,4.372276
 8shi,H,C,Y,R,95,8,C,CD,4.7065268
 8shi,H,C,Y,R,95,8,C,NE,4.75659
 8shi,H,C,Y,R,95,8,C,CZ,4.6289907

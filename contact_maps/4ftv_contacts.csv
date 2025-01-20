@@ -55,14 +55,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 4ftv,D,A,R,W,27,167,NH1,CH2,4.040445
 4ftv,D,A,R,W,27,167,NH2,CH2,4.638753
 4ftv,D,A,R,R,27,170,NH1,NH2,4.74124
-4ftv,D,A,R,X,27,302,CB,O3,4.3493857
-4ftv,D,A,R,X,27,302,CG,C3,4.304178
-4ftv,D,A,R,X,27,302,CG,O3,3.4033039
-4ftv,D,A,R,X,27,302,CD,C3,3.9484076
-4ftv,D,A,R,X,27,302,CD,O3,3.5523794
-4ftv,D,A,R,X,27,302,NE,O3,4.914338
-4ftv,D,A,R,X,27,302,NH1,C3,4.9031925
-4ftv,D,A,R,X,27,302,NH1,O3,4.989492
 4ftv,D,A,G,K,28,66,O,NZ,4.690702
 4ftv,D,A,G,W,28,167,N,CE2,4.8259
 4ftv,D,A,G,W,28,167,N,CZ2,3.8230653
@@ -386,8 +378,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 4ftv,E,A,P,Q,103,155,CD,CD,3.8605926
 4ftv,E,A,P,Q,103,155,CD,OE1,4.1432114
 4ftv,E,A,P,Q,103,155,CD,NE2,3.489064
-4ftv,E,A,X,Q,402,72,O,CD,4.5946503
-4ftv,E,A,X,Q,402,72,O,NE2,3.6039255
 4ftv,D,C,G,L,28,1,CA,CG,4.9183965
 4ftv,D,C,G,L,28,1,CA,CD1,4.4515615
 4ftv,D,C,G,L,28,1,CA,CD2,4.046367
@@ -645,4 +635,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 4ftv,E,C,P,Y,103,5,CG,CZ,3.858838
 4ftv,E,C,P,Y,103,5,CG,OH,4.0729895
 4ftv,E,C,P,Y,103,5,CD,CE1,4.95276
-4ftv,E,C,X,Y,402,8,O,OH,4.3401794

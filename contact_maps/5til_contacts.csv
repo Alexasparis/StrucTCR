@@ -51,7 +51,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5til,G,A,L,A,58,158,CD1,CB,4.5613728
 5til,G,A,V,A,60,158,CB,CB,4.6792173
 5til,G,A,V,A,60,158,CG1,CB,4.479833
-5til,G,A,K,X,75,303,NZ,O,4.430414
 5til,G,A,Y,R,101,62,N,NH2,4.88043
 5til,G,A,Y,R,101,62,CA,NH2,4.6876817
 5til,G,A,Y,R,101,62,CB,CZ,4.496769
@@ -168,7 +167,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5til,H,A,D,R,28,79,OD2,CZ,3.4712322
 5til,H,A,D,R,28,79,OD2,NH1,2.779963
 5til,H,A,D,R,28,79,OD2,NH2,3.269564
-5til,H,A,D,X,28,308,OD2,O,4.67162
 5til,H,A,Y,K,29,68,OH,O,4.8648963
 5til,H,A,Y,G,29,69,OH,CA,4.3771744
 5til,H,A,Y,G,29,69,OH,O,4.609336
@@ -230,7 +228,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5til,H,A,V,R,49,75,CG2,CZ,4.035803
 5til,H,A,V,R,49,75,CG2,NH1,4.6392784
 5til,H,A,V,R,49,75,CG2,NH2,3.6227262
-5til,H,A,V,X,49,308,CG2,O,4.394995
 5til,H,A,Q,R,69,79,CD,CZ,4.614845
 5til,H,A,Q,R,69,79,CD,NH1,4.47882
 5til,H,A,Q,R,69,79,CD,NH2,4.362851

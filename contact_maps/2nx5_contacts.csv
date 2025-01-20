@@ -9,7 +9,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 2nx5,D,A,S,E,27,166,CB,OE1,4.0704603
 2nx5,D,A,S,E,27,166,CB,OE2,3.8841705
 2nx5,D,A,S,E,27,166,OG,OE2,4.9495063
-2nx5,D,A,S,X,27,291,OG,O,4.540068
 2nx5,D,A,G,L,28,163,N,CD2,4.8715763
 2nx5,D,A,G,L,28,163,CA,CD2,3.7813911
 2nx5,D,A,G,L,28,163,C,CG,4.9235687
@@ -176,7 +175,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 2nx5,D,A,Y,W,102,167,OH,CD1,4.8833795
 2nx5,D,A,Y,W,102,167,OH,NE1,4.286659
 2nx5,D,A,I,Q,103,65,CD1,OE1,4.817602
-2nx5,D,A,X,E,199,154,O,OE2,4.813995
 2nx5,E,A,R,T,30,69,CG,OG1,4.555775
 2nx5,E,A,R,T,30,69,CD,OG1,4.153805
 2nx5,E,A,R,T,30,69,NE,CA,4.467627

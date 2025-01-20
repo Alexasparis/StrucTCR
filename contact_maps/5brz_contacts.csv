@@ -53,10 +53,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5brz,D,A,Y,Y,32,159,OH,CB,3.9380062
 5brz,D,A,Y,Y,32,159,OH,CG,4.9355574
 5brz,D,A,Y,Y,32,159,OH,CD1,4.958473
-5brz,D,A,Y,X,32,403,CD2,O,4.845277
-5brz,D,A,Y,X,32,403,CE2,O,3.7145963
-5brz,D,A,Y,X,32,403,CZ,O,3.965273
-5brz,D,A,Y,X,32,403,OH,O,3.3899124
 5brz,D,A,R,H,52,151,CG,CD2,4.9443736
 5brz,D,A,R,H,52,151,CD,CG,4.421516
 5brz,D,A,R,H,52,151,CD,ND1,4.5229526
@@ -192,7 +188,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5brz,D,A,Y,E,54,161,OH,CD,4.4714427
 5brz,D,A,Y,E,54,161,OH,OE1,4.8468924
 5brz,D,A,Y,E,54,161,OH,OE2,4.248259
-5brz,D,A,P,X,95,403,O,O,4.8562865
 5brz,D,A,G,V,96,158,CA,CG1,4.2393174
 5brz,D,A,G,V,96,158,C,CG1,4.741786
 5brz,D,A,G,V,96,158,O,C,4.67371
@@ -212,10 +207,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5brz,D,A,G,R,96,163,O,CB,3.722183
 5brz,D,A,G,R,96,163,O,CG,4.967155
 5brz,D,A,G,R,96,163,O,NE,4.8407097
-5brz,D,A,G,X,96,403,N,O,4.7964187
-5brz,D,A,G,X,96,403,CA,O,3.5129242
-5brz,D,A,G,X,96,403,C,O,3.1908097
-5brz,D,A,G,X,96,403,O,O,2.864312
 5brz,D,A,G,G,97,162,CA,CA,4.9224434
 5brz,D,A,G,G,97,162,CA,C,4.5222645
 5brz,D,A,G,R,97,163,N,N,4.6098175
@@ -246,10 +237,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5brz,D,A,G,D,97,166,CA,OD2,3.7748287
 5brz,D,A,G,D,97,166,C,CG,4.993941
 5brz,D,A,G,D,97,166,C,OD2,4.150396
-5brz,D,A,G,X,97,403,N,O,3.9721653
-5brz,D,A,G,X,97,403,CA,O,4.571375
-5brz,D,A,G,X,97,403,C,O,4.5234494
-5brz,D,A,G,X,97,403,O,O,3.6879582
 5brz,D,A,A,Q,98,62,O,CD,4.676894
 5brz,D,A,A,Q,98,62,O,OE1,4.200083
 5brz,D,A,A,Q,98,62,O,NE2,4.26323

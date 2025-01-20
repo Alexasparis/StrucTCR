@@ -1,5 +1,4 @@
 pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from,atom_to,dist
-6zkz,D,A,S,X,28,429,O,O,4.84089
 6zkz,D,A,A,H,29,155,CA,CD2,3.9365623
 6zkz,D,A,A,H,29,155,CA,NE2,4.302289
 6zkz,D,A,A,H,29,155,C,CD2,4.0023365
@@ -9,9 +8,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,A,A,H,29,155,CB,CG,4.9337244
 6zkz,D,A,A,H,29,155,CB,CD2,3.9873743
 6zkz,D,A,A,H,29,155,CB,NE2,4.7484508
-6zkz,D,A,A,X,29,429,N,O,4.735448
-6zkz,D,A,A,X,29,429,CA,O,3.9865475
-6zkz,D,A,A,X,29,429,CB,O,4.0638537
 6zkz,D,A,I,E,36,154,O,OE1,4.697412
 6zkz,D,A,I,H,36,155,N,CD2,4.282857
 6zkz,D,A,I,H,36,155,N,CE1,4.9613028
@@ -135,9 +131,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,A,Q,R,109,62,NE2,CZ,4.452603
 6zkz,D,A,Q,R,109,62,NE2,NH1,3.7149694
 6zkz,D,A,Q,R,109,62,NE2,NH2,4.4216137
-6zkz,D,A,Q,X,109,406,C,O,4.336023
-6zkz,D,A,Q,X,109,406,O,O,4.52669
-6zkz,D,A,Q,X,109,406,CB,O,4.636978
 6zkz,D,A,A,D,110,69,N,OD2,4.6346474
 6zkz,D,A,A,D,110,69,CA,CB,4.8006506
 6zkz,D,A,A,D,110,69,CA,CG,4.5830774
@@ -148,16 +141,11 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,A,A,D,110,69,CB,OD2,3.3188226
 6zkz,D,A,A,I,110,73,O,CG1,4.873711
 6zkz,D,A,A,I,110,73,O,CD1,4.779483
-6zkz,D,A,A,X,110,406,N,O,4.059641
-6zkz,D,A,A,X,110,406,CA,O,3.9424038
-6zkz,D,A,A,X,110,406,CB,O,4.0559964
 6zkz,D,A,G,I,113,73,O,CD1,4.9749804
 6zkz,D,A,T,Q,114,72,CB,OE1,4.9228973
 6zkz,D,A,T,Q,114,72,CG2,OE1,4.6138144
 6zkz,D,A,T,I,114,73,CG2,CG1,4.3190727
 6zkz,D,A,T,I,114,73,CG2,CD1,3.774171
-6zkz,D,A,X,D,402,69,O,OD2,4.207971
-6zkz,D,A,X,X,402,406,O,O,4.5822787
 6zkz,E,A,E,V,37,76,OE1,CG1,4.6764174
 6zkz,E,A,Y,R,55,65,OH,NH1,4.2687964
 6zkz,E,A,Y,D,55,69,OH,CG,4.9702687
@@ -281,7 +269,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,E,A,D,Q,67,72,OD2,CD,4.009679
 6zkz,E,A,D,Q,67,72,OD2,OE1,3.636393
 6zkz,E,A,D,Q,67,72,OD2,NE2,4.0070257
-6zkz,E,A,S,X,109,434,OG,O,4.285448
 6zkz,E,A,R,I,111,73,NE,CD1,4.7032185
 6zkz,E,A,R,I,111,73,CZ,CG1,4.761904
 6zkz,E,A,R,I,111,73,CZ,CD1,4.1513195
@@ -316,11 +303,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,E,A,R,E,111,152,NH1,CD,3.5749536
 6zkz,E,A,R,E,111,152,NH1,OE1,3.5214765
 6zkz,E,A,R,E,111,152,NH1,OE2,2.8845606
-6zkz,E,A,R,X,111,434,CA,O,4.8228683
-6zkz,E,A,R,X,111,434,C,O,4.5876093
-6zkz,E,A,R,X,111,434,CB,O,3.9524682
-6zkz,E,A,R,X,111,434,CG,O,4.8692107
-6zkz,E,A,R,X,111,434,CD,O,4.734602
 6zkz,E,A,G,D,112,149,N,OD2,4.621358
 6zkz,E,A,G,D,112,149,CA,C,4.8385706
 6zkz,E,A,G,D,112,149,CA,O,4.6203384
@@ -337,8 +319,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,E,A,G,A,112,150,CA,N,4.803864
 6zkz,E,A,G,A,112,150,CA,CA,4.518457
 6zkz,E,A,G,A,112,150,CA,CB,4.4607797
-6zkz,E,A,G,X,112,434,N,O,4.1852574
-6zkz,E,A,G,X,112,434,CA,O,4.4470625
 6zkz,E,A,S,D,112,149,N,O,4.5362916
 6zkz,E,A,S,D,112,149,N,CG,3.7786794
 6zkz,E,A,S,D,112,149,N,OD1,3.7637851
@@ -352,14 +332,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,E,A,S,D,112,149,OG,CG,3.5336869
 6zkz,E,A,S,D,112,149,OG,OD1,2.9233994
 6zkz,E,A,S,D,112,149,OG,OD2,3.4222767
-6zkz,E,A,X,K,408,146,O,CG,4.638502
-6zkz,E,A,X,K,408,146,O,CD,4.2943153
-6zkz,E,A,X,K,408,146,O,NZ,4.9824333
-6zkz,E,A,X,X,408,434,O,O,2.7032397
-6zkz,E,A,X,K,412,146,O,CE,4.539017
-6zkz,E,A,X,K,412,146,O,NZ,3.7524536
-6zkz,E,A,X,X,422,434,O,O,4.3174295
-6zkz,E,A,X,R,427,75,O,NH1,4.251468
 6zkz,D,C,A,K,29,5,CA,CE,4.515521
 6zkz,D,C,A,K,29,5,CA,NZ,4.2423997
 6zkz,D,C,A,K,29,5,C,CE,3.9196684
@@ -370,9 +342,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,C,A,K,29,5,CB,CD,4.806668
 6zkz,D,C,A,K,29,5,CB,CE,3.9713628
 6zkz,D,C,A,K,29,5,CB,NZ,3.4461257
-6zkz,D,C,A,X,29,101,CA,O,4.606921
-6zkz,D,C,A,X,29,101,O,O,4.6527133
-6zkz,D,C,A,X,29,101,CB,O,3.1673965
 6zkz,D,C,I,K,36,5,N,CE,4.7635937
 6zkz,D,C,I,K,36,5,N,NZ,4.910098
 6zkz,D,C,Y,K,37,5,CD1,CD,4.791548
@@ -415,7 +384,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,C,Q,K,109,5,O,CE,3.5812194
 6zkz,D,C,Q,K,109,5,O,NZ,2.9121635
 6zkz,D,C,Q,K,109,5,CB,NZ,4.760758
-6zkz,D,C,Q,X,109,101,O,O,4.860766
 6zkz,D,C,A,A,110,4,N,O,4.3844323
 6zkz,D,C,A,A,110,4,CA,C,4.753744
 6zkz,D,C,A,A,110,4,CA,O,3.8505812
@@ -428,9 +396,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,D,C,A,K,110,5,O,CB,4.84756
 6zkz,D,C,A,K,110,5,O,CG,4.4315543
 6zkz,D,C,G,K,113,5,N,CG,4.9512753
-6zkz,D,C,X,K,401,5,O,CD,4.634607
-6zkz,D,C,X,K,401,5,O,CE,3.2743416
-6zkz,D,C,X,K,401,5,O,NZ,3.4617827
 6zkz,E,C,Y,L,38,8,CZ,CD2,4.414357
 6zkz,E,C,Y,L,38,8,OH,CG,4.225174
 6zkz,E,C,Y,L,38,8,OH,CD1,4.066138
@@ -467,7 +432,3 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6zkz,E,C,R,L,111,8,NH1,CA,4.0752993
 6zkz,E,C,R,L,111,8,NH1,CB,3.579501
 6zkz,E,C,R,L,111,8,NH1,CG,4.79917
-6zkz,E,C,X,L,408,8,O,CG,4.6546926
-6zkz,E,C,X,L,408,8,O,CD2,3.3353
-6zkz,E,C,X,L,422,8,O,CG,4.9703355
-6zkz,E,C,X,L,422,8,O,CD2,3.4856687

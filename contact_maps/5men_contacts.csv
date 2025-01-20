@@ -490,9 +490,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5men,D,C,Y,L,97,6,CZ,CD1,4.734062
 5men,D,C,Y,L,97,6,CZ,CD2,4.435398
 5men,D,C,Y,L,97,6,OH,CD2,4.739997
-5men,D,C,X,K,305,4,O,CE,4.643085
-5men,D,C,X,L,305,6,O,CD1,4.9919753
-5men,D,C,X,K,309,4,O,NZ,3.7545762
 5men,E,C,E,W,30,8,CB,CG,4.879727
 5men,E,C,E,W,30,8,CB,CD1,4.2548733
 5men,E,C,E,W,30,8,CB,CD2,4.646748

@@ -113,10 +113,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 4eup,G,D,G,R,96,65,N,NE,4.788083
 4eup,G,D,G,R,96,65,CA,CD,4.590428
 4eup,G,D,G,R,96,65,CA,NE,4.9888
-4eup,G,D,X,R,303,170,O,NE,4.956905
-4eup,G,D,X,R,303,170,O,CZ,3.6296422
-4eup,G,D,X,R,303,170,O,NH1,3.011348
-4eup,G,D,X,R,303,170,O,NH2,3.3471606
 4eup,H,D,E,V,30,76,CD,CG1,4.64598
 4eup,H,D,E,V,30,76,OE1,CB,4.7202826
 4eup,H,D,E,V,30,76,OE1,CG1,3.7242496

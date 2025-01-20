@@ -67,11 +67,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rpa,D,A,I,Q,109,155,CD1,CD,3.9295115
 6rpa,D,A,I,Q,109,155,CD1,OE1,4.4356694
 6rpa,D,A,I,Q,109,155,CD1,NE2,4.074853
-6rpa,D,A,I,X,109,317,O,O,4.470047
-6rpa,D,A,N,X,110,317,CA,O,4.396207
-6rpa,D,A,N,X,110,317,C,O,4.376036
-6rpa,D,A,N,X,110,317,O,O,3.9769137
-6rpa,D,A,S,X,111,317,O,O,4.6823187
 6rpa,D,A,G,K,111,66,CA,CE,4.5465593
 6rpa,D,A,G,K,111,66,CA,NZ,4.6829896
 6rpa,D,A,G,K,111,66,C,CD,4.306375
@@ -81,9 +76,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rpa,D,A,G,K,111,66,O,CD,3.371358
 6rpa,D,A,G,K,111,66,O,CE,3.1953423
 6rpa,D,A,G,K,111,66,O,NZ,3.1480088
-6rpa,D,A,G,X,111,308,CA,O,4.612963
-6rpa,D,A,G,X,111,312,C,O,4.8238792
-6rpa,D,A,G,X,111,312,O,O,3.7813728
 6rpa,D,A,A,G,112,62,CA,CA,4.969033
 6rpa,D,A,A,G,112,62,C,CA,4.354183
 6rpa,D,A,A,G,112,62,C,C,4.9648027
@@ -108,7 +100,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rpa,D,A,A,K,112,66,C,CG,4.8775463
 6rpa,D,A,A,K,112,66,C,CD,4.524202
 6rpa,D,A,A,K,112,66,O,CD,4.9547954
-6rpa,D,A,A,X,112,312,CA,O,4.9527917
 6rpa,D,A,G,G,112,62,N,O,4.8347583
 6rpa,D,A,G,G,112,62,CA,O,4.536085
 6rpa,D,A,G,R,112,65,CA,CB,4.0488443
@@ -304,12 +295,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rpa,E,A,Q,R,58,75,NE2,CZ,4.346378
 6rpa,E,A,Q,R,58,75,NE2,NH1,3.1428106
 6rpa,E,A,Q,R,58,75,NE2,NH2,4.962124
-6rpa,E,A,Q,X,58,311,N,O,4.490944
-6rpa,E,A,Q,X,58,311,CA,O,4.5628924
-6rpa,E,A,Q,X,58,311,C,O,4.2456393
-6rpa,E,A,Q,X,58,311,O,O,3.228323
-6rpa,E,A,Q,X,58,311,CB,O,4.240326
-6rpa,E,A,Q,X,58,311,CG,O,4.3596196
 6rpa,E,A,G,E,59,19,N,OE2,4.6676917
 6rpa,E,A,G,E,59,19,CA,OE2,3.9284756
 6rpa,E,A,G,E,59,19,C,OE2,4.9668746
@@ -551,8 +536,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 6rpa,D,C,Y,W,114,5,CE1,CZ3,4.2489147
 6rpa,D,C,Y,W,114,5,OH,N,4.7604976
 6rpa,D,C,Y,I,114,6,OH,CG1,4.90693
-6rpa,D,C,X,W,301,5,O,CZ2,4.699614
-6rpa,D,C,X,W,301,5,O,CH2,4.685344
 6rpa,E,C,T,Q,37,8,OG1,NE2,4.373159
 6rpa,E,C,G,Q,108,8,N,NE2,4.9120317
 6rpa,E,C,G,Q,108,8,CA,NE2,4.1993456

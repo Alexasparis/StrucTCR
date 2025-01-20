@@ -80,7 +80,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 3pqy,D,A,S,H,110,155,CB,NE2,4.325961
 3pqy,D,A,S,H,110,155,OG,CE1,4.4712915
 3pqy,D,A,S,H,110,155,OG,NE2,4.88703
-3pqy,D,A,S,X,110,278,O,O,4.2201014
 3pqy,E,A,E,V,30,76,CB,CG1,4.2403393
 3pqy,E,A,E,V,30,76,CG,CG1,3.8781672
 3pqy,E,A,E,V,30,76,CD,CG1,4.92038

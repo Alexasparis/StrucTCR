@@ -1,50 +1,30 @@
 # Find contact map:
 
 # This file contains functions to find the most similar TCR given an input TCR using tcrdist3. 
-# 1) parse_CDR3 (anarci_output)
-# 2) get_germlines (sequence)
+# 1) get_germlines (sequence)
 
 # TCRdist
-# 3) create_dataframe (alpha_outputs_list, beta_outputs_list, pdb_id_list)
-# 4) add_tcr_to_dataframe (df, alpha_seq, beta_seq, tcr_name)
-# 5) find_closest_tcr(df, alpha_seq, beta_seq, tcr_name)
+# 2) create_dataframe (alpha_outputs_list, beta_outputs_list, pdb_id_list)
+# 3) find_closest_tcr(df, alpha_seq, beta_seq, tcr_name, one_value=True)
 
 # Levenshtein distance
-# 6) parse_cdrs(alfa_anarci_output, beta_anarci_output, epitope)
-# 7) calculate_sequence_distance(seq1, seq2)
-# 8) compute_pairwise_distances (cdrs_alpha1, cdrs_alpha2, cdrs_beta1, cdrs_beta2, epitope1, epitope2)
-# 9) compute_combined_distance(cdrs_alpha1, cdrs_beta1, epitope1, cdrs_alpha2, cdrs_beta2, epitope2)
-# 10) create_distance_matrix(input_df, tcr_alpha_sequence, tcr_beta_sequence, epitope)
-# 11) get_min_combined_distance(df_results)
+# 4) parse_cdrs(alfa_anarci_output, beta_anarci_output, epitope)
+# 5) compute_pairwise_distances (cdrs_alpha1, cdrs_alpha2, cdrs_beta1, cdrs_beta2, epitope1, epitope2)
+# 6) compute_combined_distance(cdrs_alpha1, cdrs_beta1, epitope1, cdrs_alpha2, cdrs_beta2, epitope2)
+# 7) create_distance_matrix(input_df, tcr_alpha_sequence, tcr_beta_sequence, epitope)
+# 8) get_min_combined_distance(df_results)
 
 #Import libraries
 from anarci import anarci
 import pandas as pd
 from tcrdist.repertoire import TCRrep
-import Levenshtein as lev
-import os
+import numpy as np
+import pickle
+from utils import extract_specific_sequences, extract_sequences, parse_general_file
+from mapping import run_anarci, parse_CDR3, global_alignment
+from select_nr_set import calculate_sequence_distance
 
-from mapping import run_anarci
-from select_nr_set import calculate_sequence_distance, extract_specific_sequences
-
-
-def parse_CDR3(anarci_output):
-    cdr3, seq = "", ""
-    for i in anarci_output.split("\n"):
-        if i and i[0] != "#" and i[0] != "/":
-            parts = i.rstrip().split()
-            if len(parts) >= 3:
-                _, num, *residues = parts
-                num = int(num)  
-                res = residues[-1]  
-                if res != "-":
-                    seq += res
-                    if 105 <= num <= 117:
-                        cdr3 += res
-            else:
-                print(f"Línea inesperada: {parts}")
-    
-    return cdr3, seq
+seq_dict=parse_general_file("./structures_annotation/general.txt")
     
 def get_germlines(seq:str):
     '''
@@ -97,34 +77,35 @@ def create_dataframe(alpha_outputs, beta_outputs, pdb_ids):
     # Create DataFrame
     df = pd.DataFrame(data)
     return df
-    
-def add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name):
-    """
-    Adds TCR information to the DataFrame.
-    
-    Parameters:
-    - df (pd.DataFrame): The DataFrame to which TCR information will be added.
-    - alpha_seq (str): The TCR alpha chain sequence.
-    - beta_seq (str): The TCR beta chain sequence.
-    - tcr_name (str): Identifier for the input TCR.
-    
-    Returns:
-    - pd.DataFrame: Updated DataFrame with new TCR information added.
-    """
-    # Generate the new pdb_id
-    pdb_id = f"{tcr_name}"
 
-    # Alpha chain
-    anarci_output_alpha = run_anarci(alpha_seq, "D")
+def find_closest_tcr(df, alpha_seq, beta_seq, epitope_seq, tcr_name, one_value=True):
+    """
+    Finds the closest TCR to the given sequences.
+
+    Parameters:
+    - df (pd.DataFrame): The DataFrame containing existing TCR information.
+    - alpha_seq (str): The TCR alpha chain sequence of the new TCR.
+    - beta_seq (str): The TCR beta chain sequence of the new TCR.
+    - epitope_seq (str): The epitope sequence for comparison.
+    - tcr_name (str): The TCR name for the new entry.
+
+    Returns:
+    - list: The list of pdb_ids of the closest TCRs, ensuring `tcr_name` and `pdb_id` don't match.
+    """
+
+    pdb_id = tcr_name
+
+    # Process the alpha chain
+    anarci_output_alpha = run_anarci(alpha_seq, "TRA")
     cdr3_alpha, _ = parse_CDR3(anarci_output_alpha)
     v_gene_alpha, j_gene_alpha = get_germlines(alpha_seq)
     
-    # Beta chain
-    anarci_output_beta = run_anarci(beta_seq, "E")
+    # Process the beta chain
+    anarci_output_beta = run_anarci(beta_seq, "TRB")
     cdr3_beta, _ = parse_CDR3(anarci_output_beta)
     v_gene_beta, j_gene_beta = get_germlines(beta_seq)
     
-    # New row as DataFrame
+    # Create a new row as DataFrame
     new_row = pd.DataFrame({
         'pdb_id': [pdb_id],
         'cdr3_a_aa': [cdr3_alpha],
@@ -136,111 +117,74 @@ def add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name):
         'count': [1]
     })
 
-    # Add the new row to the DataFrame
-    df = pd.concat([df, new_row], ignore_index=True)
-       
-    return df
-
-import pandas as pd
-from tcrdist.repertoire import TCRrep
-import pandas as pd
-from tcrdist.repertoire import TCRrep
-
-def find_closest_tcr(df, alpha_seq, beta_seq, epitope, seq_dict, tcr_name):
-    """
-    Finds the closest TCR to the given sequences.
+    # Create TCRrep for the new TCR row
+    tr_current = TCRrep(cell_df=new_row, 
+            organism='human', 
+            chains=['alpha', 'beta'], 
+            compute_distances=True,
+            db_file='alphabeta_gammadelta_db.tsv')
     
-    Parameters:
-    - df (pd.DataFrame): The DataFrame containing existing TCR information.
-    - alpha_seq (str): The TCR alpha chain sequence of the new TCR.
-    - beta_seq (str): The TCR beta chain sequence of the new TCR.
-    - epitope (str): The epitope sequence to compare against.
-    - seq_dict (dict): A dictionary mapping PDB IDs to their sequences for extraction.
-    - tcr_name (str): The TCR name for the new entry.
+    # To search in different datasets
+    #length=len(epitope_seq)
+    #pdb_ids_samelength=[]
+    #for pdb_id in df['pdb_id']:
+    #    pdb_path=f"./pdb_files/{pdb_id}.pdb"
+    #    a, b, e = extract_specific_sequences(pdb_path, seq_dict, extract_sequences)
+    #    if len(e)==length:
+    #        pdb_ids_samelength.append(pdb_id)
+
+    # To search in this dataset
+    with open('./structures_annotation/epitope_dict.pkl', 'rb') as f:
+        epitope_dict = pickle.load(f)
+    epitope_length = len(epitope_seq)
+    pdb_entries_samelength = epitope_dict.get(f"{epitope_length}", [])
+    pdb_ids_samelength = [pdb_id for pdb_id, _ in pdb_entries_samelength]
+    # Filter DataFrame for PDBs with the same epitope length
+    df_samelength = df[df['pdb_id'].isin(pdb_ids_samelength)]
+    # Avoid the current TCR
+    df_samelength = df_samelength[df_samelength['pdb_id'] != pdb_id]
+
+    # Compute TCRrep for the filtered PDBs
+    tr = TCRrep(cell_df=df_samelength, 
+            organism='human', 
+            chains=['alpha', 'beta'], 
+            compute_distances=True,
+            db_file='alphabeta_gammadelta_db.tsv')
     
-    Returns:
-    - str: The pdb_id of the closest TCR, ensuring `tcr_name` and `pdb_id` don't match.
-    """
-    # Add the new TCR to the DataFrame
-    df = add_tcr_to_dataframe(df, alpha_seq, beta_seq, tcr_name)
+    # Compute distances between the new TCR and existing TCRs
+    tr.compute_rect_distances(df=tr_current.clone_df, df2=tr.clone_df)
 
-    # Extract the last row as a DataFrame (which is the newly added TCR)
-    last_row = df.iloc[[-1]]
-
-    # List to store the results
-    results = []
-
-    # Iterate over each row of the DataFrame except the last one
-    for end_row in range(len(df) - 1):  # Range from 0 to the second-to-last row
-        # Create a new DataFrame with the current row
-        current_row = df.iloc[[end_row]]  # Current row as DataFrame
-        
-        # Check if the current pdb_id matches the new TCR name
-        current_pdb_id = current_row['pdb_id'].values[0]  # Assuming 'pdb_id' is the column name for pdb IDs
-        if current_pdb_id == tcr_name:
-            continue  # Skip if the current pdb_id matches the new TCR name
-        
-        # Construct the path to the database file
-        dir_path = os.getcwd()
-        db_file_path = os.path.join(dir_path, 'TCRdist', 'alphabeta_gammadelta_db.tsv')
-        
-        # Create a new TCRrep for the current row
-        tr_current = TCRrep(cell_df=current_row,
-                            organism='human', 
-                            chains=['alpha', 'beta'], 
-                            compute_distances=False,
-                            db_file=db_file_path)
-
-        # Create another TCRrep for the last row
-        tr_last_row = TCRrep(cell_df=last_row, 
-                             organism='human', 
-                             chains=['alpha', 'beta'], 
-                             compute_distances=False,
-                             db_file=db_file_path)
-
-        # Calculate the distances between the current row and the last row
-        tr_current.compute_rect_distances(df=tr_last_row.clone_df, df2=tr_current.clone_df)
-
-        # Sum the distances of alpha and beta to get the global distance
-        global_distances = [tr_current.rw_alpha[0][i] + tr_current.rw_beta[0][i] for i in range(len(tr_current.rw_alpha[0]))]
-        
-        # Add the global distances to the results list
-        results.append(global_distances)
+    # Sum the alpha and beta chain distances to get a global distance
+    tr.alpha_beta = tr.rw_alpha + tr.rw_beta
+    array = tr.alpha_beta
+    pdbs = tr.clone_df['pdb_id'].values
+    min_value = np.min(array)
+    min_indices = np.where(array == min_value)[1]
+    min_pdb_ids = pdbs[min_indices].tolist()
     
-    # Flatten the results to get only the numbers
-    flattened_results = [item[0] for item in results]
+    #In other datasets
+    #distances={}
+    #for pdb_id in min_pdb_ids:
+    #    pdb_path=f"./pdb_files/{pdb_id}.pdb"
+    #    a, b, e = extract_specific_sequences(pdb_path, seq_dict, extract_sequences) #Usa el dict aquí apra no iterar
+    #    dist=calculate_sequence_distance(epitope_seq, e)
+    #    distances[pdb_id]=dist
 
-    # Find the minimum value in the list
-    min_value = min(flattened_results)
-    
-    # Get all indices where the value is equal to the minimum value
-    min_indices = [index for index, value in enumerate(flattened_results) if value == min_value]
-
-    # Collect PDB IDs for the minimum distances
-    pdb_ids_with_min_distance = []
-    for index in min_indices:
-        pdb_id = df.iloc[index]['pdb_id']  # Adjust 'pdb_id' to match your actual column name
-        pdb_ids_with_min_distance.append(pdb_id)
-
-    # Check for multiple PDB IDs and calculate distances to the epitope
-    if len(pdb_ids_with_min_distance) > 1:
-        epi_distances = []
-        for pdb_id in pdb_ids_with_min_distance:
-            # Ensure this function returns the correct sequence for the given PDB ID
-            seq_a, seq_b, epitope1 = extract_specific_sequences(f'./pdb_files/{pdb_id}.pdb', seq_dict)  # Assuming it returns the relevant epitope sequence
-            distance = calculate_sequence_distance(epitope1, epitope)  # Compare with the provided epitope
-            epi_distances.append(distance)
-    
-        # Find the minimum distance and corresponding indices
-        min_distance = min(epi_distances)
-        min_indices = [index for index, dist in enumerate(epi_distances) if dist == min_distance]
-
-        # If there are multiple indices with the same minimum distance, take the first one
-        pdb_id = pdb_ids_with_min_distance[min_indices[0]]  # Select the first PDB ID with the minimum distance
+    distances = {}
+    # Calculate the epitope distance for each PDB with the minimum distance (this dataset)
+    for pdb_id in min_pdb_ids:
+        sequence = next((seq for pid, seq in epitope_dict.get(f"{epitope_length}", []) if pid == pdb_id), None)
+        if sequence:
+            dist = calculate_sequence_distance(epitope_seq, sequence)
+            distances[pdb_id] = dist
+    # Select the PDB with the minimum epitope distance
+    min_pdb_ids = [k for k, v in distances.items() if v == min(distances.values())]
+    # If there are more than one value, select the first one
+    if one_value == True:
+        min_pdb_ids = min_pdb_ids[0]
+        return min_pdb_ids
     else:
-        pdb_id = pdb_ids_with_min_distance[0]  # Only one pdb_id, take it
-    
-    return pdb_id
+        return min_pdb_ids
     
 # Levenshtein distance
 
@@ -323,17 +267,6 @@ def parse_cdrs(alfa_anarci_output, beta_anarci_output, epitope):
         'Beta': cdrs_beta,
         'Epitope': epitope
     }
-    
-
-def calculate_sequence_distance(seq1, seq2):
-    """
-    Calculates the Levenshtein distance between two sequences.
-    
-    :param seq1: First sequence.
-    :param seq2: Second sequence.
-    :return: Levenshtein distance between seq1 and seq2.
-    """
-    return lev.distance(seq1, seq2)
 
 def compute_pairwise_distances(cdrs_alpha1, cdrs_alpha2, cdrs_beta1, cdrs_beta2, epitope1, epitope2):
     """Calculate pairwise distances between sequences of two TCRs."""
@@ -426,4 +359,183 @@ def get_min_combined_distance(df_results):
     min_pdb_id = min_row['pdb_id']
     return min_pdb_id
 
+
+def find_closest_tcr2(df, alpha_seq, beta_seq, epitope_seq, tcr_name, mhc_allele, mhc_seq=None, structure=True, one_value=True):
+    pdb_id = tcr_name
+
+    # Process alpha chain
+    anarci_output_alpha = run_anarci(alpha_seq, "TRA")
+    cdr3_alpha, _ = parse_CDR3(anarci_output_alpha)
+    v_gene_alpha, j_gene_alpha = get_germlines(alpha_seq)
+
+    # Process beta chain
+    anarci_output_beta = run_anarci(beta_seq, "TRB")
+    cdr3_beta, _ = parse_CDR3(anarci_output_beta)
+    v_gene_beta, j_gene_beta = get_germlines(beta_seq)
+
+    # Create a new TCR entry
+    new_row = pd.DataFrame({
+        'pdb_id': [pdb_id],
+        'cdr3_a_aa': [cdr3_alpha],
+        'v_a_gene': [v_gene_alpha],
+        'j_a_gene': [j_gene_alpha],
+        'cdr3_b_aa': [cdr3_beta],
+        'v_b_gene': [v_gene_beta],
+        'j_b_gene': [j_gene_beta],
+        'count': [1]})
+
+    # Compute TCRrep for the new TCR
+    tr_current = TCRrep(cell_df=new_row, organism='human', chains=['alpha', 'beta'], 
+                        compute_distances=True, db_file='alphabeta_gammadelta_db.tsv')
+    
+    # Load epitope dictionary and filter MHC alleles
+    with open('./structures_annotation/epitope_dict.pkl', 'rb') as f:
+        epitope_dict = pickle.load(f)
+    epitope_length = len(epitope_seq)
+
+    # Filter by MHC allele
+    alleles_df = pd.read_csv('./structures_annotation/mhc_annotation.csv')
+    pdb_ids_allele = alleles_df.loc[alleles_df['mhci_allele'] == mhc_allele, 'pdb_id'].values
+    df_samelength = df[df['pdb_id'].isin(pdb_ids_allele) & (df['pdb_id'] != pdb_id)]
+
+    if df_samelength.empty:
+        print("No TCRs with the same MHC allele")
+        print("Searching in the whole dataset")
+        
+        # Extract MHC sequence if needed
+        if structure:
+            seqs_query = extract_sequences(f"./pdb_files/{pdb_id}.pdb")
+            mhc_seq_query_id = seq_dict[pdb_id]['mhc_chain']
+            mhc_seq_query = seqs_query[mhc_seq_query_id]
+        elif mhc_seq:
+            mhc_seq_query = mhc_seq
+        else:
+            mhc_seqs_df = pd.read_csv('./input/input_MHCs2.csv')
+            mhc_allele = mhc_allele + ":01:01"  
+            mhc_seq_query = mhc_seqs_df[mhc_seqs_df['mhc_allele'] == mhc_allele]['mhc_seq'].values[0]
+        
+        
+        # Perform global alignment with all MHC sequences
+        scores = {}
+        for pdb_file in os.listdir('./pdb_files'):
+            if pdb_file.endswith('.pdb') and pdb_file != f"{pdb_id}.pdb":
+                pdb_idmhc = pdb_file.split('.')[0]
+                mhc_seqid = seq_dict[pdb_idmhc]['mhc_chain']
+                pdb_path = f"./pdb_files/{pdb_file}"
+                seqs = extract_sequences(pdb_path)
+                mhc_seq = seqs[mhc_seqid]
+                _, _, score = global_alignment(mhc_seq_query, mhc_seq) 
+                scores[pdb_idmhc] = score
+
+        # Select PDBs with the highest score
+        max_score = max(scores.values())
+        max_pdb_ids = [pdb_id for pdb_id, score in scores.items() if score == max_score]
+
+
+        # Collect MHC alleles for the selected PDBs
+        mhc_alleles_max = []
+        for pdb_id in max_pdb_ids:
+            mhc_seqid = seq_dict[pdb_id]['mhc_chain']
+            pdb_path = f"./pdb_files/{pdb_id}.pdb"
+            seqs = extract_sequences(pdb_path)
+            mhc_seq = seqs[mhc_seqid]
+            mhc_allele = alleles_df[alleles_df['pdb_id'] == pdb_id]['mhci_allele'].values
+            mhc_alleles_max.append(mhc_allele)
+        
+        # Filter the DataFrame for the selected MHC alleles
+        pdb_ids = []
+        for mhc_allele in mhc_alleles_max:
+            if isinstance(mhc_allele, (list, np.ndarray)):
+                pdb_ids_allele = alleles_df[alleles_df['mhci_allele'].isin(mhc_allele)]['pdb_id'].values
+            else:
+                pdb_ids_allele = alleles_df[alleles_df['mhci_allele'] == mhc_allele]['pdb_id'].values
+            pdb_ids.extend(pdb_ids_allele)
+
+        df_samelength = df[df['pdb_id'].isin(pdb_ids)]
+        df_samelength = df_samelength[df_samelength['pdb_id'] != pdb_id]
+        
+    # Further filter by epitope length
+    samelength = [row['pdb_id'] for _, row in df_samelength.iterrows() if epitope_length == len(extract_specific_sequences(f"./pdb_files/{row['pdb_id']}.pdb", seq_dict, extract_sequences)[2])]
+    df_samelength = df_samelength[df_samelength['pdb_id'].isin(samelength)]
+    
+    if df_samelength.empty:
+        # To search in this dataset
+        print("There are not pdb_files with same or similar MHC alleles and same epitope length doing reverse")
+        with open('./structures_annotation/epitope_dict.pkl', 'rb') as f:
+            epitope_dict = pickle.load(f)
+        epitope_length = len(epitope_seq)
+        pdb_entries_samelength = epitope_dict.get(f"{epitope_length}", [])
+        pdb_ids_samelength = [pdb_id for pdb_id, _ in pdb_entries_samelength]  
+        # Exclude current TCR_id from pdb_ids_samelength
+    
+        for pdb_id in pdb_ids_samelength:
+            if pdb_id == tcr_name:
+                pdb_ids_samelength.remove(pdb_id)
+
+
+        # Extract MHC sequence 
+        if structure:
+            seqs_query = extract_sequences(f"./pdb_files/{pdb_id}.pdb")
+            mhc_seq_query_id = seq_dict[pdb_id]['mhc_chain']
+            mhc_seq_query = seqs_query[mhc_seq_query_id]
+        elif mhc_seq:
+            mhc_seq_query = mhc_seq
+        else:
+            mhc_seqs_df = pd.read_csv('./input/input_MHCs2.csv')
+            mhc_allele = mhc_allele + ":01:01"  
+            mhc_seq_query = mhc_seqs_df[mhc_seqs_df['mhc_allele'] == mhc_allele]['mhc_seq'].values[0]
+
+        # Filter for MHC similarity.
+        scores_len={}
+        for len_pdb_id in pdb_ids_samelength:
+            if len_pdb_id != pdb_id:
+                path_len=f"./pdb_files/{len_pdb_id}.pdb"
+                mhc_seqid_len = seq_dict[len_pdb_id]['mhc_chain']
+                seqs_len = extract_sequences(path_len)
+                mhc_seq_len = seqs_len[mhc_seqid_len]
+                aligned_seq_len, aligned_seq_query_len, score_len = global_alignment(mhc_seq_query, mhc_seq_len) 
+                scores_len[len_pdb_id] = score_len
+        
+        max_score_len = max(scores_len.values())
+        max_pdb_ids_len = [len_pdb_id for len_pdb_id, score_len in scores_len.items() if score_len == max_score_len]
+
+        mhc_alleles_max_len = []
+        for len_pdb_id in max_pdb_ids_len:
+            mhc_seqid_len = seq_dict[len_pdb_id]['mhc_chain']
+            pdb_path_len = f"./pdb_files/{len_pdb_id}.pdb"
+            seqs_len = extract_sequences(pdb_path_len)
+            mhc_seq_len = seqs_len[mhc_seqid_len]
+            mhc_allele_len = alleles_df[alleles_df['pdb_id'] == len_pdb_id]['mhci_allele'].values
+            mhc_alleles_max_len.append(mhc_allele_len)
+        
+        pdb_ids_len = []
+        for mhc_allele_len in mhc_alleles_max_len:
+            # Si mhc_allele_len es un array/lista, utiliza .isin()
+            if isinstance(mhc_allele_len, (list, np.ndarray)):
+                pdb_ids_allele_len = alleles_df[alleles_df['mhci_allele'].isin(mhc_allele_len)]['pdb_id'].values
+            else:
+                # Si es un único valor, filtra directamente
+                pdb_ids_allele_len = alleles_df[alleles_df['mhci_allele'] == mhc_allele_len]['pdb_id'].values
+            pdb_ids_len.extend(pdb_ids_allele_len)
+            
+        pdb_ids_len = [pdb_id for pdb_id in pdb_ids_len if pdb_id in pdb_ids_samelength] 
+        df_samelength = df[df['pdb_id'].isin(pdb_ids_len)]
+        df_samelength = df_samelength[df_samelength['pdb_id'] != pdb_id]
+    # Compute TCRrep for the filtered PDBs
+    tr = TCRrep(cell_df=df_samelength, organism='human', chains=['alpha', 'beta'], 
+                compute_distances=True, db_file='alphabeta_gammadelta_db.tsv')
+
+    tr.compute_rect_distances(df=tr_current.clone_df, df2=tr.clone_df)
+    tr.alpha_beta = tr.rw_alpha + tr.rw_beta
+    min_value = np.min(tr.alpha_beta)
+    min_indices = np.where(tr.alpha_beta == min_value)[1]
+    min_pdb_ids = tr.clone_df['pdb_id'].values[min_indices].tolist()
+
+    distances = {
+        pdb_id: calculate_sequence_distance(epitope_seq, extract_specific_sequences(f"./pdb_files/{pdb_id}.pdb", seq_dict, extract_sequences)[2])
+        for pdb_id in min_pdb_ids
+    }
+
+    min_pdb_ids = [k for k, v in distances.items() if v == min(distances.values())]
+    return min_pdb_ids[0] if one_value else min_pdb_ids
 

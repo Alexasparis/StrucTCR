@@ -133,9 +133,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5sws,D,A,Q,R,114,79,OE1,CZ,4.144318
 5sws,D,A,Q,R,114,79,OE1,NH2,2.875812
 5sws,D,A,Q,R,114,79,NE2,NH2,4.275882
-5sws,D,A,X,E,302,18,O,OE2,4.5308456
-5sws,D,A,X,A,323,89,O,CB,3.7455866
-5sws,D,A,X,X,328,346,O,O,3.3628047
 5sws,E,A,F,V,55,76,CE1,CG1,4.519064
 5sws,E,A,F,V,55,76,CE2,CG1,4.5932407
 5sws,E,A,F,V,55,76,CE2,CG2,4.382778
@@ -248,8 +245,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5sws,E,A,A,I,69,142,O,CG2,4.877049
 5sws,E,A,A,I,69,142,CB,CG2,4.491853
 5sws,E,A,A,K,69,146,N,NZ,4.8832793
-5sws,E,A,A,X,69,333,C,O,4.5155683
-5sws,E,A,A,X,69,333,O,O,3.4409592
 5sws,E,A,F,I,72,142,CD1,CG2,4.7640944
 5sws,E,A,F,I,72,142,CE1,O,4.4627085
 5sws,E,A,F,I,72,142,CE1,CG2,3.7564888
@@ -300,9 +295,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5sws,E,A,F,K,72,146,CZ,CD,4.7662063
 5sws,E,A,F,Q,72,149,C,OE1,4.7824388
 5sws,E,A,F,Q,72,149,CD2,OE1,4.7436886
-5sws,E,A,F,X,72,333,CD1,O,4.4397807
-5sws,E,A,F,X,72,333,CE1,O,3.3250468
-5sws,E,A,F,X,72,333,CZ,O,3.8111722
 5sws,E,A,E,R,73,145,OE1,CG,4.651452
 5sws,E,A,E,R,73,145,OE1,NE,4.787085
 5sws,E,A,E,Q,73,149,N,CD,4.32294
@@ -323,7 +315,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5sws,E,A,E,Q,73,149,CG,CD,4.9242764
 5sws,E,A,E,Q,73,149,CG,OE1,4.9145007
 5sws,E,A,E,Q,73,149,CG,NE2,4.402582
-5sws,E,A,E,X,73,333,OE2,O,4.947997
 5sws,E,A,F,Q,76,149,O,OE1,4.417915
 5sws,E,A,Q,Q,77,149,CG,CD,4.7319307
 5sws,E,A,Q,Q,77,149,CG,OE1,4.3839636
@@ -388,14 +379,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 5sws,E,A,D,R,111,75,OD1,NH2,3.9352298
 5sws,E,A,D,R,111,75,OD2,NH1,4.814465
 5sws,E,A,D,R,111,75,OD2,NH2,4.7919674
-5sws,E,A,X,X,302,333,O,O,4.291027
-5sws,E,A,X,E,315,18,O,CD,4.3161163
-5sws,E,A,X,E,315,18,O,OE1,4.2451277
-5sws,E,A,X,E,315,18,O,OE2,3.6536453
-5sws,E,A,X,I,333,142,O,CG2,4.739497
-5sws,E,A,X,I,333,142,O,CD1,4.882441
-5sws,E,A,X,X,333,333,O,O,3.2642915
-5sws,E,A,X,X,338,333,O,O,4.8982425
 5sws,E,C,K,E,59,4,CD,CD,4.281949
 5sws,E,C,K,E,59,4,CD,OE1,4.1406183
 5sws,E,C,K,E,59,4,CD,OE2,3.9177659

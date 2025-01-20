@@ -293,9 +293,6 @@ pdb_id,chain_from,chain_to,residue_from,residue_to,resid_from,resid_to,atom_from
 7ow6,D,A,G,A,101,69,O,CB,3.2932985
 7ow6,D,A,Y,N,103,66,OH,OD1,4.7358866
 7ow6,D,A,Y,A,103,69,CE1,CB,4.5841694
-7ow6,D,A,X,A,302,150,O,CA,4.875672
-7ow6,D,A,X,A,302,150,O,C,4.646862
-7ow6,D,A,X,A,302,150,O,O,3.751445
 7ow6,E,A,E,R,30,75,CD,CZ,4.8951983
 7ow6,E,A,E,R,30,75,CD,NH1,4.8596053
 7ow6,E,A,E,R,30,75,CD,NH2,3.972174
