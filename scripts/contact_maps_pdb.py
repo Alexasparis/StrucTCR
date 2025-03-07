@@ -5,13 +5,17 @@
 
 # Example of execution: python contact_maps_pdb.py -pdb pdb_files -out contact_maps -workers 7
 
+
 import os
 import concurrent.futures
 import argparse
 import pandas as pd
+import sys
 
-from src.extract_contacts import extract_contacts
-from src.utils import parse_general_file
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from extract_contacts import extract_contacts
+from utils import parse_general_file
+from config import STRUCTURES_ANNOTATION_DIR
 
 def validate_chain_columns(csv_file, chain_dict):
     """
@@ -52,7 +56,7 @@ def process_pdb_file(pdb_file, pdb_dir, output_dir, chain_dict):
     pdb_id = os.path.basename(pdb_file).split('_')[0]
     model_number = os.path.basename(pdb_file).split('_')[1].split('.')[0]
     pdb_path = os.path.join(pdb_dir, pdb_file)
-
+    print(pdb_id, model_number)
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, f'{pdb_id}_{model_number}_contacts.csv')
 
@@ -88,12 +92,13 @@ def main():
     parser.add_argument("-workers", "--num_workers", type=int, default=os.cpu_count() - 1,
                         help="Number of worker processes (default: max cores - 1).")
     args = parser.parse_args()
-    
-    chain_dict = parse_general_file('./structures_annotation/general.txt')
+    path_general = os.path.join(STRUCTURES_ANNOTATION_DIR, "general.txt")
+    chain_dict = parse_general_file(path_general)
     pdb_files = [f for f in os.listdir(args.pdb_folder) if f.endswith('.pdb')]
-    
+
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.num_workers) as executor:
-        executor.map(lambda f: process_pdb_file(f, args.pdb_folder, args.output_folder, chain_dict), pdb_files)
+        executor.map(process_pdb_file, pdb_files, [args.pdb_folder] * len(pdb_files), 
+                     [args.output_folder] * len(pdb_files), [chain_dict] * len(pdb_files))
 
 if __name__ == "__main__":
     main()

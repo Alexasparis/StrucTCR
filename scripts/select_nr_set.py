@@ -2,7 +2,7 @@
 # Select non redundant structures based on a Levenshtein distance threshold for CDR3a, CDR3b, and peptide sequences:
 
 # Example of usage:
-# python3 select_nr_set.py --general ./structures_annotation/general.txt --pdb_folder pdb_files --output summary_clustering.pdb --nr_folder pdb_nr --distance 6 --method complete
+# python3 select_nr_set.py --pdb_folder pdb_files --output summary_clustering.pdb --nr_folder pdb_nr --distance 6 --method complete
 
 # This file contains functions to cluster pdb_files according to CDR3a+CDR3b+peptide Levenshtein distance.
 
@@ -23,9 +23,10 @@ import argparse
 
 from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import linkage, fcluster
-
-from src.utils import extract_specific_sequences, parse_general_file, extract_sequences, calculate_sequence_distance
-from src.mapping import run_anarci, parse_CDR3
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from utils import extract_specific_sequences, parse_general_file, extract_sequences, calculate_sequence_distance
+from mapping import run_anarci, parse_CDR3
+from config import STRUCTURES_ANNOTATION_DIR
 
 def get_distance_sum(cdr3a1, cdr3a2, cdr3b1, cdr3b2, peptide1, peptide2):
     """
@@ -103,7 +104,6 @@ def copy_non_redundant_pdbs(pdb_folder, pdb_nonred_folder, df_non_redundant):
 
 def main():
     parser = argparse.ArgumentParser(description='Process PDB structures and perform clustering.')
-    parser.add_argument("-g","--general", type=str, required=True, help='Path to the general file.')
     parser.add_argument("-p","--pdb_folder", type=str, required=True, help='Path to the folder containing PDB files.')
     parser.add_argument("-o","--output", type=str, default='./structures_annotation/summary_PDB_clustering.csv', help='Path to the output CSV file.')
     parser.add_argument("-nr","--nr_folder", type=str, default='pdb_nr', help='Path to the folder for non-redundant PDB files.')
@@ -113,7 +113,8 @@ def main():
     args = parser.parse_args()
 
     print("Parsing the general file...")
-    chain_dict = parse_general_file(args.general)
+    general_path = os.path.join(STRUCTURES_ANNOTATION_DIR, "general.txt")
+    chain_dict = parse_general_file(general_path)
     
     print("Listing PDB files...")
     pdb_files = sorted([os.path.join(args.pdb_folder, f) for f in os.listdir(args.pdb_folder) if f.endswith('.pdb')])
