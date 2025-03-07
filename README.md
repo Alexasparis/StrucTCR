@@ -69,7 +69,7 @@ strucTCR/
 1. Clone this repository:
 ```bash
    git clone https://github.com/Alexasparis/TCRranker.git
-   cd strucTCR
+   cd TCRranker
 ```
 2. Install the required Python packages:
 ```bash
