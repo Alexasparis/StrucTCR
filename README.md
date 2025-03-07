@@ -12,11 +12,12 @@ The core of the project involves predicting how T-cell receptors (TCRs) bind to 
 
 Required Python packages:
 
-- numpy
-- pandas
-- scipy
-- TCRdist
-- ...
+- pandas==2.2.2
+- numpy==2.0.2
+- biopython==1.84
+- scipy==1.14.1
+- tcrdist3==0.3
+- anarci==1.3
 
 You can install the required Python packages with the following command:
 
@@ -67,7 +68,7 @@ strucTCR/
 
 1. Clone this repository:
 ```bash
-   git clone https://github.com/your-username/strucTCR.git
+   git clone https://github.com/Alexasparis/TCRranker.git
    cd strucTCR
 ```
 2. Install the required Python packages:
