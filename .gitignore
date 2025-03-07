@@ -1,2 +1,10 @@
+# Ignore Mac system files
 .DS_Store
+
+# Ignore Vim swap files
+*.swp
+
+# Ignore temporary files and folders
+*.log
+
 
