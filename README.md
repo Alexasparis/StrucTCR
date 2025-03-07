@@ -22,13 +22,14 @@ You can install the required Python packages with the following command:
 
 ```bash
 pip install -r requirements.txt
-
+```
 
 
 ## Directory Structure
 
 The project follows the following directory structure:
 
+```bash
 strucTCR/
 │
 ├── data/                         # Data files
@@ -57,7 +58,7 @@ strucTCR/
 ├── input/                        # Directory for input files
 ├── README.md                     # Project documentation
 └── requirements.txt              # Python dependencies
-
+```
 
 
 ## How to Run the Script
@@ -65,14 +66,14 @@ strucTCR/
 **[Section to be completed]**
 
 1. Clone this repository:
-   ```bash
+```bash
    git clone https://github.com/your-username/strucTCR.git
    cd strucTCR
-
+```
 2. Install the required Python packages:
-   ```bash
+```bash
     pip install -r requirements.txt
-
+```
 3. (to be completed)
 
 
