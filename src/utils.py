@@ -67,7 +67,11 @@ def extract_specific_sequences(pdb_file, chain_types_dict):
         return seqTCRA, seqTCRB, seqPep
 
     # Get chain information for the current pdb_id
-    chains = chain_types_dict[pdb_id]
+    chains = chain_types_dict.get(pdb_id, {'tcra_chain': 'D',
+                                            'tcrb_chain': 'E',
+                                            'peptide_chain': 'C',
+                                            'b2m_chain': 'B',
+                                            'mhc_chain': 'A'})
     
     # Extract sequences based on the chain information
     if chains['tcra_chain'] is not None:
