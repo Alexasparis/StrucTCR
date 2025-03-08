@@ -4,7 +4,7 @@ This project aims to predict TCR-peptide binding based on structural data, using
 
 ## Project Overview
 
-The core of the project involves predicting how T-cell receptors (TCRs) bind to peptide-major histocompatibility complex class I (pMHC) complexes. This is achieved by analyzing TCR-pMHC crystals retrieved from the Protein Data Bank (PDB), as well as synthetic structures generated through a data augmentation process using AlphaFold3 from VDJdatabase. The model is based on the creation of a statistical potential derived from position-specific TCR-peptide contacts and TCR-MHC contacts.
+The core of the project involves predicting T-cell receptors (TCRs) binding to peptide-major histocompatibility complex class I (pMHC) complexes. This is achieved by TCR-pMHC contacts from crystals retrieved from the Protein Data Bank (PDB), as well as synthetic structures generated through a data augmentation process. Synthetic data was generated with AlphaFold3 using sequence data of TCR-pMHC complexes from VDJdb. The model is based on the creation of a statistical potential derived from position-specific TCR-peptide contacts and TCR-MHC contacts.
 
 ## Requirements
 
